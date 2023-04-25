@@ -1,0 +1,16 @@
+
+.barContainer{
+    display: flex;
+    justify-content:center;
+    align-items:center;
+    width: 50%;
+    height: 80vh;
+    padding: 20px
+}
+@media screen and (max-width: 768px) {
+    .barContainer {
+      width: 90%;
+      height: 60vh;
+      padding: 10px;
+    }
+}
