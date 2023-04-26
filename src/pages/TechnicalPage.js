@@ -163,6 +163,7 @@ const ClassifyPage = () => {
                   remitente={ticket.remitente}
                   id={ticket.id}
                   handleSend={handleSend}
+                  categoria={ticket.categoria}
                 />
               ))
             : null}

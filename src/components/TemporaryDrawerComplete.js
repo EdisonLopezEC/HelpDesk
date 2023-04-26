@@ -23,9 +23,16 @@ export default function TemporaryDrawerComplete({
 }) {
   const [isMobile, setIsMobile] = React.useState(window.innerWidth <= 768);
 
+  fecha = new Date(fecha);
+
+  const fechaEc = fecha.toLocaleDateString('es-EC', {day: '2-digit', month: '2-digit', year: '2-digit'})
+                 + ' '
+                 + fecha.toLocaleTimeString('es-EC', {hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit'});
+
+
   const regex = /<html\b[^>]*>([\s\S]*?)<\/html>/i;
-const match = mensaje.match(regex);
-const contenidoHtml = match ? match[0] : '';
+  const match = mensaje.match(regex);
+  const contenidoHtml = match ? match[0] : "";
 
   React.useEffect(() => {
     function handleResize() {
@@ -68,7 +75,7 @@ const contenidoHtml = match ? match[0] : '';
       flexDirection={"column"}
     >
       <Typography id="transition-modal-title" variant="h6" component="h3">
-        Información del Ticket
+        Información del Ticket Cerrado
       </Typography>
       <hr />
       <Divider />
@@ -82,7 +89,14 @@ const contenidoHtml = match ? match[0] : '';
       </Typography>
 
       <hr />
+      <Typography variant="h7" component="h5">
+        Asunto
+      </Typography>
+      <Typography id="transition-modal-description" sx={{ mt: 2 }}>
+        {asunto}
+      </Typography>
 
+      <hr />
       <Typography variant="h7" component="h5">
         Mensaje
       </Typography>
@@ -91,16 +105,41 @@ const contenidoHtml = match ? match[0] : '';
         sx={{ mt: 2 }}
         component="div"
         dangerouslySetInnerHTML={{
-          __html: /<[a-z][\s\S]*>/i.test(mensaje) ? contenidoHtml : `${mensaje}`,
+          __html: /<[a-z][\s\S]*>/i.test(mensaje)
+            ? contenidoHtml
+            : `${mensaje}`,
         }}
       />
+
+      <hr/>
+      <Typography variant="h7" component="h5">
+        Area / Categoria
+      </Typography>
+      <Typography id="transition-modal-description" sx={{ mt: 2 }}>
+        {
+          categoria === "administracion" ? (
+            categoria = categoria.charAt(0).toUpperCase() + categoria.slice(1),
+            categoria.replace("o", "\u00F3")
+          ):(categoria.charAt(0).toUpperCase() + categoria.slice(1))
+        }
+      </Typography>
+      <hr />
+
+      <Typography variant="h7" component="h5">
+        Fecha y Hora de Inicio
+      </Typography>
+      <Typography id="transition-modal-description" sx={{ mt: 2 }}>
+        {fechaEc}
+      </Typography>
+      <hr />
+
       <Stack direction="row" spacing={2} justifyContent="center">
         <Button
           onClick={() => {
-            toggleDrawer(anchor, false);
+            setState({ right: false });
           }}
         >
-          Aceptar
+          Cerrar
         </Button>
       </Stack>
     </Box>
@@ -112,7 +151,7 @@ const contenidoHtml = match ? match[0] : '';
         <React.Fragment key={anchor}>
           <Button
             onClick={() => {
-              handleClose();
+              // handleClose();
               handleVerClick(anchor);
             }}
           >

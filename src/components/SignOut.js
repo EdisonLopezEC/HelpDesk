@@ -19,7 +19,7 @@ const SignOut = ({ username, avatarUrl }) => {
 
     const handleSingOut = () => {
       localStorage.removeItem('token');
-      window.location.href = '/';
+      window.location.href = `${process.env.PUBLIC_URL}/`;
     }
 
     function handleMenuOpen(event) {

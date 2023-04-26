@@ -19,6 +19,14 @@ export default function TemporaryDrawerProgress({ fecha, asunto, remitente, mens
   const match = mensaje.match(regex);
   const contenidoHtml = match ? match[0] : '';
  
+
+  fecha = new Date(fecha);
+
+  const fechaEc = fecha.toLocaleDateString('es-EC', {day: '2-digit', month: '2-digit', year: '2-digit'})
+                 + ' '
+                 + fecha.toLocaleTimeString('es-EC', {hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit'});
+
+
   React.useEffect(() => {
     function handleResize() {
       setIsMobile(window.innerWidth <= 768);
@@ -59,7 +67,7 @@ export default function TemporaryDrawerProgress({ fecha, asunto, remitente, mens
       flexDirection={"column"}
     >
       <Typography id="transition-modal-title" variant="h6" component="h3">
-        Información del Ticket
+        Solicitar que se atienda el ticket
       </Typography>
       <hr />
       <Divider />
@@ -70,6 +78,15 @@ export default function TemporaryDrawerProgress({ fecha, asunto, remitente, mens
       </Typography>
       <Typography id="transition-modal-description" sx={{ mt: 2 }}>
         {remitente}
+      </Typography>
+
+
+      <hr/>
+      <Typography variant="h7" component="h5">
+        Fecha y Hora de solicitud
+      </Typography>
+      <Typography id="transition-modal-description" sx={{ mt: 2 }}>
+        {fechaEc}
       </Typography>
 
       <hr />

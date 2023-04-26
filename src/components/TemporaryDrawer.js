@@ -15,6 +15,13 @@ export default function TemporaryDrawer({ fecha, asunto, remitente, mensaje, id,
 const match = mensaje.match(regex);
 const contenidoHtml = match ? match[0] : '';
 
+fecha = new Date(fecha);
+
+const fechaEc = fecha.toLocaleDateString('es-EC', {day: '2-digit', month: '2-digit', year: '2-digit'})
+               + ' '
+               + fecha.toLocaleTimeString('es-EC', {hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit'});
+
+
   React.useEffect(() => {
     function handleResize() {
       setIsMobile(window.innerWidth <= 768);
@@ -98,11 +105,12 @@ const contenidoHtml = match ? match[0] : '';
         }}
       />
 
+      <hr />
       <Typography variant="h7" component="h5">
         Fecha
       </Typography>
       <Typography id="transition-modal-description" sx={{ mt: 2 }}>
-        {new Date(fecha).toLocaleDateString("es-ES")}
+        {fechaEc}
         {/* Duis mollis, est non commodo luctus, nisi erat porttitor ligula. */}
       </Typography>
 
@@ -120,6 +128,7 @@ const contenidoHtml = match ? match[0] : '';
         <option value="soporte">Soporte</option>
       </select>
 
+      <hr/>
       <Stack direction="row" spacing={2} justifyContent="center">
         <Button
           variant="outlined"

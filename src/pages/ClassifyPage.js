@@ -95,8 +95,7 @@ const ClassifyPage = () => {
         setassignedList(
           assignedList.filter((ticket) => ticket.id !== ticketId)
         );
-        const ticket = assignedList.find((ticket) => ticket.id === ticketId);
-        setInPorgressList([ticket, ...inPorgressList]);
+     
       })
       .catch((error) => {
         console.log(error);
@@ -119,7 +118,7 @@ const ClassifyPage = () => {
       <div className={styles.containerGrid}>
         {/* Cuadro 1 */}
         <div className={styles.containerCards}>
-          <Chip label="Planeado" color="primary" className={styles.chip} />
+          <Chip label="Categorizar" color="primary" className={styles.chip} />
           <hr />
           {/* {console.log('aqui', planningList)} */}
 
@@ -155,7 +154,7 @@ const ClassifyPage = () => {
 
         {/* Cuadro 2 */}
         <div className={styles.containerCards}>
-          <Chip label="En Progreso" color="warning" className={styles.chip} />
+          <Chip label="Atender" color="warning" className={styles.chip} />
           <hr />
           {isLoading ? (
             <div
@@ -229,7 +228,7 @@ const ClassifyPage = () => {
           }}
         >
           <Chip
-            label="En proceso"
+            label="Solicitado"
             variant="primary"
             onClick={handleClick}
             color="primary"
@@ -237,7 +236,7 @@ const ClassifyPage = () => {
           />
           <hr />
           <Chip
-            label="En espera"
+            label="En Progreso"
             onClick={handleClick}
             color="warning"
             style={{ width: "100%" }}

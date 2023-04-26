@@ -40,7 +40,7 @@ const CardComplete = ({asunto,fecha,remitente,mensaje, id, handleSend, categoria
           </Typography>
         </CardContent>
       </CardActionArea>
-      <TemporaryDrawerComplete open={isDrawerOpen} onClose={handleDrawerClose} fecha={fecha} asunto={asunto} mensaje={mensaje} remitente={remitente} id={id} categoria={categoria} handleClose={handleClose}/>
+      <TemporaryDrawerComplete open={isDrawerOpen} handleDrawerClose={handleDrawerClose} fecha={fecha} asunto={asunto} mensaje={mensaje} remitente={remitente} id={id} categoria={categoria} handleClose={handleClose}/>
     </Card>
     <hr/>
     </>

@@ -15,7 +15,16 @@ export default function TemporaryDrawer({
   mensaje,
   id,
   handleSend,
+  categoria
 }) {
+
+  fecha = new Date(fecha);
+
+  const fechaEc = fecha.toLocaleDateString('es-EC', {day: '2-digit', month: '2-digit', year: '2-digit'})
+                 + ' '
+                 + fecha.toLocaleTimeString('es-EC', {hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit'});
+
+
   const [isMobile, setIsMobile] = React.useState(window.innerWidth <= 768);
   React.useEffect(() => {
     function handleResize() {
@@ -67,7 +76,7 @@ const contenidoHtml = match ? match[0] : '';
       flexDirection={"column"}
     >
       <Typography id="transition-modal-title" variant="h6" component="h3">
-        Clasificar el ticket
+        Atender el Ticket
       </Typography>
       <hr />
       <Divider />
@@ -78,6 +87,14 @@ const contenidoHtml = match ? match[0] : '';
       </Typography>
       <Typography id="transition-modal-description" sx={{ mt: 2 }}>
         {remitente}
+      </Typography>
+
+      <hr />
+      <Typography variant="h7" component="h5">
+        Area / Categoria
+      </Typography>
+      <Typography id="transition-modal-description" sx={{ mt: 2 }}>
+        {categoria.charAt(0).toUpperCase() + categoria.slice(1)}
       </Typography>
 
       <hr />
@@ -100,11 +117,13 @@ const contenidoHtml = match ? match[0] : '';
           __html: /<[a-z][\s\S]*>/i.test(mensaje) ? contenidoHtml : `${mensaje}`,
         }}
       />
+
+      <hr />
       <Typography variant="h7" component="h5">
         Fecha
       </Typography>
       <Typography id="transition-modal-description" sx={{ mt: 2 }}>
-        {new Date(fecha).toLocaleDateString("es-ES")}
+        {fechaEc}
         {/* Duis mollis, est non commodo luctus, nisi erat porttitor ligula. */}
       </Typography>
 
