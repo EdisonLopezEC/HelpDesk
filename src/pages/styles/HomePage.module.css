@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 .barContainer{
     display: flex;
@@ -13,4 +14,21 @@
       height: 60vh;
       padding: 10px;
     }
+=======
+
+.barContainer{
+    display: flex;
+    justify-content:center;
+    align-items:center;
+    width: 50%;
+    height: 80vh;
+    padding: 20px
+}
+@media screen and (max-width: 768px) {
+    .barContainer {
+      width: 90%;
+      height: 60vh;
+      padding: 10px;
+    }
+>>>>>>> 249c57bfc6d68c4a5b435e819488e329cb6924d6
 }
