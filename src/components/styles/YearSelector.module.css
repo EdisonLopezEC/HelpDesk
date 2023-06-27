@@ -1,0 +1,18 @@
+.year-selector {
+    margin-right: 10px;
+  }
+  
+  /* Estilos para pantallas más pequeñas */
+  @media (max-width: 768px) {
+    .year-selector {
+      width: 100%; /* Ajusta el ancho según tus necesidades para dispositivos móviles */
+    }
+  }
+  
+  /* Estilos para pantallas más grandes */
+  @media (min-width: 769px) {
+    .year-selector {
+      width: 150px; /* Ajusta el ancho según tus necesidades para pantallas más grandes */
+    }
+  }
+  
