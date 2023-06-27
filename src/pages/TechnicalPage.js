@@ -396,14 +396,6 @@ const ClassifyPage = () => {
   return (
     <div className={styles.container}>
 
-
-
-      {/* <div style={{
-        width: "80vw",
-        display: "flex",
-        justifyContent: "center"
-      }}> */}
-
       <div className={styles.header}
         style={{
           alignItems: "center"
@@ -613,8 +605,6 @@ const ClassifyPage = () => {
               )
             )
           }
-
-
           {/* Boton para agregar */}
           <hr />
           {/* <Button variant="outlined">+</Button> */}
