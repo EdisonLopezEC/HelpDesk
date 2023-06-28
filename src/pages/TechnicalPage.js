@@ -500,7 +500,9 @@ const ClassifyPage = () => {
           {!isLoading && (selectedMonth !== "" || selectedCategory !== "")
             ? (
               dateFilteredPlanningList.length > 0 ? (
-                dateFilteredPlanningList.map((ticket) => (
+                dateFilteredPlanningList
+                .sort((a, b) => new Date(b.fecha) - new Date(a.fecha))
+                .map((ticket) => (
                   <CardBoard
                     mensaje={ticket.mensaje}
                     key={ticket.id}
@@ -510,6 +512,7 @@ const ClassifyPage = () => {
                     id={ticket.id}
                     handleSend={handleSend}
                     categoria={ticket.categoria}
+                    handleAttend={handleAttend}
                   />
                 ))
               ) : (
@@ -529,6 +532,7 @@ const ClassifyPage = () => {
                       id={ticket.id}
                       handleSend={handleSend}
                       categoria={ticket.categoria}
+                      handleAttend={handleAttend}
                     />
                   ))
               ) : (
@@ -569,7 +573,9 @@ const ClassifyPage = () => {
           {!isLoading && (selectedMonth !== "" || selectedCategory !== "")
             ? (
               dateFilteredAssignedList.length > 0 ? (
-                dateFilteredAssignedList.map((ticket) => (
+                dateFilteredAssignedList
+                .sort((a, b) => new Date(b.fecha) - new Date(a.fecha))
+                .map((ticket) => (
                   <CardProgress
                     mensaje={ticket.mensaje}
                     key={ticket.id}
@@ -579,6 +585,7 @@ const ClassifyPage = () => {
                     id={ticket.id}
                     handleSend={handleSend}
                     categoria={ticket.categoria}
+                    handleAttend={handleAttend}
                   />
                 ))
               ) : (
@@ -598,6 +605,7 @@ const ClassifyPage = () => {
                       id={ticket.id}
                       handleSend={handleSend}
                       categoria={ticket.categoria}
+                      handleAttend={handleAttend}
                     />
                   ))
               ) : (
@@ -635,7 +643,9 @@ const ClassifyPage = () => {
           {!isLoading && (selectedMonth !== "" || selectedCategory !== "")
             ? (
               dateFilteredInProgressList.length > 0 ? (
-                dateFilteredInProgressList.map((ticket) => (
+                dateFilteredInProgressList
+                .sort((a, b) => new Date(a.fecha) - new Date(b.fecha))
+                .map((ticket) => (
                   <CardComplete
                     mensaje={ticket.mensaje}
                     key={ticket.id}
@@ -645,6 +655,8 @@ const ClassifyPage = () => {
                     id={ticket.id}
                     handleSend={handleSend}
                     categoria={ticket.categoria}
+                    handleAttend={handleAttend}
+                    observacion={ticket.observacion}
                   />
                 ))
               ) : (
@@ -653,7 +665,7 @@ const ClassifyPage = () => {
             ) : (
               visibleInProgressList.length > 0 ? (
                 visibleInProgressList
-                  .sort((a, b) => new Date(b.fecha) - new Date(a.fecha))
+                  .sort((a, b) => new Date(a.fecha) - new Date(b.fecha))
                   .map((ticket) => (
                     <CardComplete
                       mensaje={ticket.mensaje}
@@ -664,6 +676,8 @@ const ClassifyPage = () => {
                       id={ticket.id}
                       handleSend={handleSend}
                       categoria={ticket.categoria}
+                      handleAttend={handleAttend}
+                      observacion={ticket.observacion}
                     />
                   ))
               ) : (

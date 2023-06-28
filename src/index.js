@@ -11,6 +11,7 @@ import SignInSide from "./components/SignInSide";
 import { StadisticsContext } from "./context/StadisticsContext";
 
 import axios from "./config/axios";
+import ClassifyPage from "./pages/ClassifyPage";
 
 function App() {
   const [stadisticsNumber, setStadisticsNumber] = useState([]);
@@ -35,7 +36,6 @@ function App() {
           console.log("ENTRO ACA");
           console.log(response);
           const { data } = response;
-<<<<<<< HEAD
           if(data.estadoCuenta !== "ACTIVO"){
             localStorage.removeItem("token");
             setUser({ login: false });
@@ -43,43 +43,6 @@ function App() {
           }
           console.log("este el rol", data.userId);
           setUser({ login: true, rol: data.userId });
-=======
-          console.log("este el rol", data.userId);
-          setUser({ login: true, rol: data.userId });
-
-          // axios.get(`${process.env.REACT_APP_API_URLS}/tickets/ticketsComplete`)
-          // .then((response)=>{
-          //   const { data } = response;
-          //   setCompletado({completado: data.cantidad});
-          // }).catch((error) =>{
-          //   setCompletado({completado: 0});
-          // })
-
-          // axios.get(`${process.env.REACT_APP_API_URLS}/tickets/ticketsRequired`)
-          // .then((response)=>{
-          //   const { data } = response;
-          //   setSolicitado({solicitado: data.cantidad});
-          // }).catch((error) =>{
-          //   setSolicitado({solicitado: 0});
-          // })
-
-          // axios.get(`${process.env.REACT_APP_API_URLS}/tickets/ticketsHold`)
-          // .then((response)=>{
-          //   const { data } = response;
-          //   setEnEspera({enEspera: data.cantidad});
-          // }).catch((error) =>{
-          //   setEnEspera({enEspera: 0});
-          // })
-
-          // axios.get(`${process.env.REACT_APP_API_URLS}/tickets/ticketsAsigned`)
-          // .then((response)=>{
-          //   const { data } = response;
-          //   setAsignado({asignado: data.cantidad});
-          // }).catch((error) =>{
-          //   setAsignado({asignado: 0});
-          // })
-
->>>>>>> 249c57bfc6d68c4a5b435e819488e329cb6924d6
         })
         .catch((error) => {
           localStorage.removeItem("token");
@@ -96,24 +59,26 @@ function App() {
         value={{ stadisticsNumber, setStadisticsNumber }}
       >
         <UserContext.Provider value={{ user, setUser }}>
-          <RouterProvider router={router}>
-            <Routes />
-          </RouterProvider>
-        </UserContext.Provider>
-      </StadisticsContext.Provider>
-    );
-  } else if (user.login && user.rol === "ROLE_HELPDESK_TECNICO") {
-    return (
-      <StadisticsContext.Provider
-        value={{ stadisticsNumber, setStadisticsNumber }}
-      >
-        <UserContext.Provider value={{ user, setUser }}>
           <RouterProvider router={routerTechnical}>
             <Routes />
           </RouterProvider>
         </UserContext.Provider>
       </StadisticsContext.Provider>
     );
+  } else if (user.login && user.rol === "ROLE_HELPDESK_TECNICO") {
+    console.log('es tecnicoooo')
+    return (
+      <StadisticsContext.Provider
+        value={{ stadisticsNumber, setStadisticsNumber }}
+      >
+        <UserContext.Provider value={{ user, setUser }}>
+          <RouterProvider router={router}>
+            <Routes />
+          </RouterProvider>
+        </UserContext.Provider>
+      </StadisticsContext.Provider>
+    );
+
   } else if (user.login && user.rol === "ROLE_HELPDESK_CATEGORIZADOR") {
     return (
       <StadisticsContext.Provider
