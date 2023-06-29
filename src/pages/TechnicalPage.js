@@ -395,12 +395,10 @@ const ClassifyPage = () => {
 
   return (
     <div className={styles.container}>
-
       <div className={styles.header}
         style={{
           alignItems: "center"
         }}
-
       >
         <h1
           style={{

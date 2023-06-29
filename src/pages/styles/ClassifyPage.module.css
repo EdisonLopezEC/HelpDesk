@@ -40,3 +40,30 @@
   }
 
 
+
+
+  .pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+
+  .pagination-container {
+    position: fixed;
+    left: 1;
+    bottom: 0;
+    width: 25%;
+    background-color: #fff;
+    border-radius: 1rem;
+    padding: .3rem;
+    
+  }
+  @media (max-width: 768px) {
+    .pagination-container {
+      font-size: 14px;
+      margin-top: 10px;
+      width: 100%;
+
+    }
+  }

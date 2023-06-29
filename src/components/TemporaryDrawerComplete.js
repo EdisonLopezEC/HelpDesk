@@ -128,7 +128,7 @@ export default function TemporaryDrawerComplete({
 
       <Typography variant="h7" component="h5">
         Fecha y Hora de Inicio
-      </Typography>
+      </Typography>    
       <Typography id="transition-modal-description" sx={{ mt: 2 }}>
         {fechaEc}
       </Typography>
