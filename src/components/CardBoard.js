@@ -8,7 +8,7 @@ import TemporaryDrawer from './TemporaryDrawer';
 
 const MAX_TEXT_LENGTH = 200; // Define el número máximo de caracteres que se mostrarán
 
-const CardBoard = ({asunto,fecha,remitente,mensaje, id, handleSend}) => {
+const CardBoard = ({asunto,fecha,remitente,mensaje, id, handleSend, handleDelete}) => {
   const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
 
   const handleCardClick = () => {
@@ -38,7 +38,7 @@ const CardBoard = ({asunto,fecha,remitente,mensaje, id, handleSend}) => {
           </Typography>
         </CardContent>
       </CardActionArea>
-      <TemporaryDrawer open={isDrawerOpen} onClose={handleDrawerClose} fecha={fecha} asunto={asunto} mensaje={mensaje} remitente={remitente} id={id} handleSend={handleSend}/>
+      <TemporaryDrawer open={isDrawerOpen} onClose={handleDrawerClose} fecha={fecha} asunto={asunto} mensaje={mensaje} remitente={remitente} id={id} handleSend={handleSend} handleDelete={handleDelete}/>
     </Card>
     <hr/>
     </>

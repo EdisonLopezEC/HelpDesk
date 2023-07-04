@@ -20,7 +20,8 @@ export default function TemporaryDrawerComplete({
   categoria,
   handleAttend,
   handleClose,
-  observacion
+  observacion,
+  fechaCompletado 
 }) {
   const [isMobile, setIsMobile] = React.useState(window.innerWidth <= 768);
 
@@ -131,6 +132,14 @@ export default function TemporaryDrawerComplete({
       </Typography>    
       <Typography id="transition-modal-description" sx={{ mt: 2 }}>
         {fechaEc}
+      </Typography>
+      <hr />
+        {console.log('FECHA COMPLETADAAA', fechaCompletado)}
+      <Typography variant="h7" component="h5">
+        Fecha y Hora Completado
+      </Typography>    
+      <Typography id="transition-modal-description" sx={{ mt: 2 }}>
+        {fechaCompletado}
       </Typography>
       <hr />
 

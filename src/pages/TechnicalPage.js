@@ -42,9 +42,7 @@ const ClassifyPage = () => {
   const [selectedYear, setSelectedYear] = useState(localStorage.getItem("selectedYear"));
 
   useEffect(() => {
-
     setIsLoading(true);
-
     axios
       .get(`${process.env.REACT_APP_API_URLS}/tickets`)
       .then((res) => {
@@ -55,6 +53,7 @@ const ClassifyPage = () => {
 
         res.data.forEach((element) => {
           const fecha = new Date(element.fecha);
+          console.log("Aqui fechas de los element", element.fechaCompletada);
           const fechaEc = fecha.toLocaleDateString('es-EC', {
             day: '2-digit',
             month: '2-digit',
@@ -642,7 +641,7 @@ const ClassifyPage = () => {
             ? (
               dateFilteredInProgressList.length > 0 ? (
                 dateFilteredInProgressList
-                .sort((a, b) => new Date(a.fecha) - new Date(b.fecha))
+                .sort((a, b) => new Date(b.fecha) - new Date(a.fecha))
                 .map((ticket) => (
                   <CardComplete
                     mensaje={ticket.mensaje}
@@ -655,15 +654,16 @@ const ClassifyPage = () => {
                     categoria={ticket.categoria}
                     handleAttend={handleAttend}
                     observacion={ticket.observacion}
+                    fechaCompletado={ticket.fechaCompletado}
                   />
                 ))
               ) : (
                 !isLoading ? <p>No hay tickets disponibles.</p> : null
-              )
+              )    
             ) : (
               visibleInProgressList.length > 0 ? (
                 visibleInProgressList
-                  .sort((a, b) => new Date(a.fecha) - new Date(b.fecha))
+                  .sort((a, b) => new Date(b.fecha) - new Date(a.fecha))
                   .map((ticket) => (
                     <CardComplete
                       mensaje={ticket.mensaje}
@@ -676,6 +676,8 @@ const ClassifyPage = () => {
                       categoria={ticket.categoria}
                       handleAttend={handleAttend}
                       observacion={ticket.observacion}
+                      fechaCompletado={ticket.fechaCompletada}
+
                     />
                   ))
               ) : (
@@ -716,7 +718,7 @@ const ClassifyPage = () => {
             }}
           >
             {/* {` Página ${currentPage} de ${allPage == -1 ? "-" : allPage} `} */}
-            {` Página ${currentPage} de ${selectedCategory !== '' || selectedMonth !== '' ? Math.ceil(totalPagesFilter / pageSize) - 1 : allPage == -1 ? "-" : allPage} `}
+            {` Página ${currentPage} de ${selectedCategory !== '' || selectedMonth !== '' ? Math.ceil(totalPagesFilter / pageSize) : allPage == -1 ? "-" : allPage-1} `}
 
           </span>
           <Button

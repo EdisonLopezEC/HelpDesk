@@ -4,14 +4,7 @@ import "animate.css";
 import "chart.js/auto";
 import styles from "./styles/HomePage.module.css";
 import { Bar } from "react-chartjs-2";
-import { Doughnut } from "react-chartjs-2";
-import { Line } from "react-chartjs-2";
 import { Pie } from "react-chartjs-2";
-import { PolarArea } from "react-chartjs-2";
-import { Radar } from "react-chartjs-2";
-import { Scatter } from "react-chartjs-2";
-import { Bubble } from "react-chartjs-2";
-import { StadisticsContext } from "../context/StadisticsContext";
 import axios from "axios";
 import {
   Chart as ChartJs,
@@ -19,7 +12,6 @@ import {
   CategoryScale,
   LinearScale,
 } from "chart.js";
-import { useContext } from "react";
 ChartJs.register(CategoryScale, LinearScale, BarElement);
 
 const HomePage = () => {
@@ -36,7 +28,6 @@ const HomePage = () => {
   }, [chartType]);
 
   const yearSelected = localStorage.getItem('selectedYear')
-
   // const {stadisticsNumber} = useContext(StadisticsContext);
   useEffect(() => {
     document.title = "Inicio";
@@ -69,14 +60,6 @@ const HomePage = () => {
       .catch((error) => {
         setEnEspera({ enEspera: 0 });
       });
-
-    // axios.get(`${process.env.REACT_APP_API_URLS}/tickets/ticketsAsigned`)
-    // .then((response)=>{
-    //   const { data } = response;
-    //   setAsignado({asignado: data.cantidad});
-    // }).catch((error) =>{
-    //   setAsignado({asignado: 0});
-    // })
   }, []);
 
   // const number = stadisticsNumber.completado;

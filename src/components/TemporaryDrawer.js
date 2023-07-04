@@ -5,9 +5,10 @@ import Button from "@mui/material/Button";
 import List from "@mui/material/List";
 import Divider from "@mui/material/Divider";
 import { width } from "@mui/system";
-import { Alert, Snackbar, Stack, Typography } from "@mui/material";
+import { Alert, Dialog, DialogActions, DialogContent, DialogTitle, Snackbar, Stack, Typography } from "@mui/material";
 import axios from "axios";
 import { useState } from "react";
+
 
 export default function TemporaryDrawer({
   fecha,
@@ -16,14 +17,35 @@ export default function TemporaryDrawer({
   mensaje,
   id,
   handleSend,
+  handleDelete
 }) {
   const [isMobile, setIsMobile] = React.useState(window.innerWidth <= 768);
+
+  const [openDialog, setOpenDialog] = useState(false);
 
   const regex = /<html\b[^>]*>([\s\S]*?)<\/html>/i;
   const match = mensaje.match(regex);
   const contenidoHtml = match ? match[0] : "";
 
   fecha = new Date(fecha);
+
+  const handleDeleteOpen = (id) => {
+    // Aquí puedes realizar la lógica para eliminar el elemento con el id proporcionado
+    setOpenDialog(true); // Cierra el diálogo de confirmación
+  };
+
+  const handleCloseDialog = (id) => {
+    // Aquí puedes realizar la lógica para eliminar el elemento con el id proporcionado
+    setOpenDialog(false); // Cierra el diálogo de confirmación
+  };
+
+  const handleClickOpenDialog = () => {
+    setOpenDialog(true); // Abre el diálogo de confirmación
+  };
+
+
+
+
 
   const fechaEc =
     fecha.toLocaleDateString("es-EC", {
@@ -194,7 +216,11 @@ export default function TemporaryDrawer({
           Seleccione una categoría!.
         </Alert>
       </Snackbar>
+
+      
     </Box>
+
+    
   );
 
   return (
@@ -202,6 +228,9 @@ export default function TemporaryDrawer({
       {["right"].map((anchor) => (
         <React.Fragment key={anchor}>
           <Button onClick={toggleDrawer(anchor, true)}>Administrar</Button>
+          <Button variant="outlined" onClick={handleClickOpenDialog} >
+            Eliminar
+          </Button>
           <Drawer
             anchor={anchor}
             open={state[anchor]}
@@ -211,6 +240,21 @@ export default function TemporaryDrawer({
           </Drawer>
         </React.Fragment>
       ))}
+
+<Dialog open={openDialog} onClose={handleCloseDialog}>
+        <DialogTitle>Confirmar Eliminación</DialogTitle>
+        <DialogContent>
+          <p>¿Estás seguro de que deseas eliminar este elemento?</p>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} color="primary">
+            Cancelar
+          </Button>
+          <Button onClick={() => handleDelete(id)} color="primary">
+            Eliminar
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }

@@ -35,6 +35,9 @@ const ClassifyPage = () => {
   const perPageOptions = [5, 10, "all"];
   const [filter, setFilter] = useState("all");
 
+  const [selectedYear, setSelectedYear] = useState(localStorage.getItem("selectedYear"));
+
+
   const [completeList] = useState([]);
 
   useEffect(() => {
@@ -48,23 +51,52 @@ const ClassifyPage = () => {
         const newinProgressList = [];
         const newRequiredList = [];
         const newHoldList = [];
+
+
         res.data.forEach((element) => {
+
+
+          const fecha = new Date(element.fecha);
+          const fechaEc = fecha.toLocaleDateString('es-EC', {
+            day: '2-digit',
+            month: '2-digit',
+            year: '2-digit',
+            hour12: false,
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+          });
+
+          const elementYear = fechaEc.slice(6, 8); // Obtener los últimos dos dígitos del año
+          const aux = selectedYear.slice(2, 4)
+
           switch (element.estado) {
             case "Solicitado":
-              newPlanningList.push(element);
+              if (elementYear === aux) {
+                newPlanningList.push(element);
+              }
               break;
             case "Asignado":
-              newassignedList.push(element);
+              if (elementYear === aux) {
+                newassignedList.push(element);
+              }
               break;
             case "completado":
-              newinProgressList.push(element);
+              if (elementYear === aux) {
+
+                newinProgressList.push(element);
+              }
               break;
             case "En Proceso":
-              console.log("áqui en proceso");
-              newRequiredList.push(element);
+              if (elementYear === aux) {
+                newRequiredList.push(element);
+              }
               break;
             case "en espera":
-              newHoldList.push(element);
+              if (elementYear === aux) {
+
+                newHoldList.push(element);
+              }
               break;
             default:
               break;
@@ -84,6 +116,32 @@ const ClassifyPage = () => {
 
   const [openFilter, setOpenFilter] = useState(false);
   const [open, setOpen] = useState(false);
+
+
+  //Eliminar ticket
+  const handleDelete = (ticketId) => {
+
+    // if (categoria === '') {
+    //   console.log('AQUI EL VALOR DE CATE' + categoria)
+
+    //   return;
+    // }
+    axios
+      .put(`${process.env.REACT_APP_API_URLS}/tickets/${ticketId}`, {
+        categoria: null,
+        estado: "cancelado",
+      })
+      .then((response) => {
+        console.log(response);
+        setPlanningList(
+          planningList.filter((ticket) => ticket.id !== ticketId)
+        );
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
 
   // Actualizar ticket
   const handleSend = (ticketId, categoria) => {
@@ -117,6 +175,7 @@ const ClassifyPage = () => {
       .put(`${process.env.REACT_APP_API_URLS}/tickets/${ticketId}`, {
         estado: "En Proceso",
         categoria: categoria,
+        fechaCompletada: new Date()
       })
       .then((response) => {
         console.log(response);
@@ -135,16 +194,16 @@ const ClassifyPage = () => {
   const handleClick = (valor) => {
     if (valor === "solicitado") {
       setListModal(holdList);
-      setTitleTransition("Tickets en proceso"); 
+      setTitleTransition("Tickets en proceso");
       setOpen(true)
 
-    } 
-    else if(valor === "filtro"){
-    setOpenFilter(true);
-      
-      
     }
-    else if(valor === "en espera"){
+    else if (valor === "filtro") {
+      setOpenFilter(true);
+
+
+    }
+    else if (valor === "en espera") {
       setListModal(requiredList);
       setTitleTransition("En espera de un técnico");
       setOpen(true)
@@ -154,7 +213,7 @@ const ClassifyPage = () => {
   };
 
 
-  
+
 
   const handleClose = () => {
     setOpen(false);
@@ -384,7 +443,7 @@ const ClassifyPage = () => {
         >
           Gestión de tickets
         </h1>
-        <Button aria-label="delete" onClick={()=>{handleClick("filtro")}}>
+        <Button aria-label="delete" onClick={() => { handleClick("filtro") }}>
           Filtrar ▾
         </Button>
       </div>
@@ -481,6 +540,7 @@ const ClassifyPage = () => {
                       remitente={ticket.remitente}
                       id={ticket.id}
                       handleSend={handleSend}
+                      handleDelete={handleDelete}
                     />
                   ))
               ) : (
@@ -500,6 +560,7 @@ const ClassifyPage = () => {
                       remitente={ticket.remitente}
                       id={ticket.id}
                       handleSend={handleSend}
+                      handleDelete={handleDelete}
                     />
                   ))
               ) : (
@@ -596,7 +657,7 @@ const ClassifyPage = () => {
             (
               dateFilteredInProgressList.length > 0 ? (
                 dateFilteredInProgressList
-                  .sort((a, b) => new Date(b.fecha) - new Date(a.fecha))
+                  .sort((a, b) => new Date(a.fechaCompletada) - new Date(b.fechaCompletada))
                   .map((ticket) => (
                     <CardComplete
                       mensaje={ticket.mensaje}
@@ -608,16 +669,16 @@ const ClassifyPage = () => {
                       handleSend={handleSend}
                       categoria={ticket.categoria}
                       observacion={ticket.observacion}
+                      fechaCompletado={ticket.fechaCompletada}
                     />
                   ))
               ) : (
                 !isLoading ? <p>No hay tickets disponibles.</p> : null
-
               )
             ) : (
               visibleInProgressList.length > 0 ? (
                 visibleInProgressList
-                  .sort((a, b) => new Date(b.fecha) - new Date(a.fecha))
+                  .sort((a, b) => new Date(a.fechaCompletada) - new Date(b.fechaCompletada))
                   .map((ticket) => (
                     <CardComplete
                       mensaje={ticket.mensaje}
@@ -629,6 +690,7 @@ const ClassifyPage = () => {
                       handleSend={handleSend}
                       categoria={ticket.categoria}
                       observacion={ticket.observacion}
+                      fechaCompletado={ticket.fechaCompletada}
                     />
                   ))
               ) : (
@@ -730,7 +792,7 @@ const ClassifyPage = () => {
             }}
           >
             {/* {` Página ${currentPage} de ${allPage == -1 ? "-" : allPage} `} */}
-            {` Página ${currentPage} de ${selectedCategory !== '' || selectedMonth !== '' ? Math.ceil(totalPagesFilter / pageSize) - 1 : allPage == -1 ? "-" : allPage} `}
+            {` Página ${currentPage} de ${selectedCategory !== '' || selectedMonth !== '' ? Math.ceil(totalPagesFilter / pageSize) : allPage == -1 ? "-" : allPage} `}
 
           </span>
           <Button

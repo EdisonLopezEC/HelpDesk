@@ -8,7 +8,8 @@ import { Box, CardActionArea } from '@mui/material';
 import TemporaryDrawer from './TemporaryDrawer';
 import TemporaryDrawerComplete from './TemporaryDrawerComplete';
 
-const CardComplete = ({asunto,fecha,remitente,mensaje, id, handleSend, categoria, handleClose, observacion}) => {
+const CardComplete = ({asunto,fecha,remitente,mensaje, id, handleSend, categoria, handleClose, observacion, fechaCompletado}) => {
+  
   const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
 
   const handleCardClick = () => {
@@ -35,7 +36,7 @@ const CardComplete = ({asunto,fecha,remitente,mensaje, id, handleSend, categoria
           </Typography>
         </CardContent>
       </CardActionArea>
-      <TemporaryDrawerComplete open={isDrawerOpen} handleDrawerClose={handleDrawerClose} fecha={fecha} asunto={asunto} mensaje={mensaje} remitente={remitente} id={id} categoria={categoria} handleClose={handleClose} observacion={observacion}/>
+      <TemporaryDrawerComplete open={isDrawerOpen} handleDrawerClose={handleDrawerClose} fecha={fecha} asunto={asunto} mensaje={mensaje} remitente={remitente} id={id} categoria={categoria} handleClose={handleClose} observacion={observacion} fechaCompletado={fechaCompletado}/>
     </Card>
     <hr/>
     </>
