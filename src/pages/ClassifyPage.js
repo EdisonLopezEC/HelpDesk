@@ -108,6 +108,7 @@ const ClassifyPage = () => {
         setRequiredList((prevList) => [...newRequiredList, ...prevList]);
         setHoldList((prevList) => [...newHoldList, ...prevList]);
         setIsLoading(false);
+        setListModal(requiredList)
       })
       .catch((error) => {
         console.log(error);
@@ -179,12 +180,15 @@ const ClassifyPage = () => {
       })
       .then((response) => {
         console.log(response);
+
+        const ticket = assignedList.find((ticket) => ticket.id === ticketId)
+        
         setassignedList(
           assignedList.filter((ticket) => ticket.id !== ticketId)
         );
 
-        const ticket = planningList.find((ticket) => ticket.id === ticketId);
         setRequiredList([ticket, ...requiredList]);
+        setListModal(requiredList)
       })
       .catch((error) => {
         console.log(error);
@@ -194,6 +198,7 @@ const ClassifyPage = () => {
   const handleClick = (valor) => {
     if (valor === "solicitado") {
       setListModal(holdList);
+      console.log('-----------> LISTA SOLICITADO: ', listModal)
       setTitleTransition("Tickets en proceso");
       setOpen(true)
 
@@ -205,10 +210,9 @@ const ClassifyPage = () => {
     }
     else if (valor === "en espera") {
       setListModal(requiredList);
+      console.log('-----------> LISTA SOLICITADO: ', listModal)
       setTitleTransition("En espera de un técnico");
       setOpen(true)
-
-
     }
   };
 

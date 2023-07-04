@@ -29,12 +29,9 @@ export default function TemporaryDrawer({
 
   fecha = new Date(fecha);
 
-  const handleDeleteOpen = (id) => {
-    // Aquí puedes realizar la lógica para eliminar el elemento con el id proporcionado
-    setOpenDialog(true); // Cierra el diálogo de confirmación
-  };
 
-  const handleCloseDialog = (id) => {
+
+  const handleCloseDialog = () => {
     // Aquí puedes realizar la lógica para eliminar el elemento con el id proporcionado
     setOpenDialog(false); // Cierra el diálogo de confirmación
   };

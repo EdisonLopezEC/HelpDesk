@@ -83,6 +83,10 @@ export default function TransitionsModal({
             </Box>
             <br />
 
+            {console.log(list," AQUI LSITAAAA")}
+            {console.log(list.length," AQUI LSITAAAA LENGTH")}
+
+
             {list.length >= 1 ? (
               list
               // .sort((a, b) => new Date(b.fecha) - new Date(a.fecha))
