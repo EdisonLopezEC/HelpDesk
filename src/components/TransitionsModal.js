@@ -40,6 +40,13 @@ export default function TransitionsModal({
   React.useEffect(() => {
     setOpen(abrir);
   }, [abrir]);
+
+  const handleCloseModify = () => {
+    setOpen(false); // Close the modal by setting the open state to false
+    handleCloseModal(); // Call the handleCloseModal function passed as prop
+  };
+
+
   return (
     <div>
       <Modal
@@ -78,7 +85,11 @@ export default function TransitionsModal({
               >
                 {titulo}
               </Typography>
-              <Button>x</Button>
+              <Button
+                onClick={
+                  handleClose
+                }
+              >x</Button>
               <br />
             </Box>
             <br />
@@ -89,11 +100,10 @@ export default function TransitionsModal({
 
             {list.length >= 1 ? (
               list
-              // .sort((a, b) => new Date(b.fecha) - new Date(a.fecha))
               .map((ticket) => (
                 <>
                   <CardComplete
-                    handleClose={handleClose}
+                    handleClose={handleCloseModify}
                     remitente={ticket.remitente}
                     categoria={ticket.categoria}
                     id={ticket.id}

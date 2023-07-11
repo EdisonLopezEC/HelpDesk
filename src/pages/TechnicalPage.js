@@ -311,11 +311,23 @@ const ClassifyPage = () => {
   console.log('AQUII DATEFILTER' + dateFilteredInProgressList)
 
 
+  const maxLength = Math.max(
+    planningList.length,
+    assignedList.length,
+    inPorgressList.length
+  );
+
+  console.log(maxLength + "AQUI MAX LENGH")
+
   const allPage = Math.ceil(
-    planningList.length +
-    assignedList.length +
-    inPorgressList.length / pageSize
-  ) - 1;
+    maxLength / pageSize
+  );
+
+  console.log(allPage + "AQUI MAX CEIL")
+
+  
+
+  console.log('ALL PAGEEEE========', allPage)
 
   const assignedListLength = dateFilteredAssignedList ? dateFilteredAssignedList.length : 0;
   const inProgressListLength = dateFilteredInProgressList ? dateFilteredInProgressList.length : 0;
@@ -361,6 +373,7 @@ const ClassifyPage = () => {
       return true; // Mantener el ticket si pasa los filtros de mes y categoría
     });
 
+
     const dateFilteredInProgressList = visibleInProgressList.filter((ticket) => {
       const ticketDate = new Date(ticket.fecha);
       const ticketMonth = ticketDate.getMonth(); // Obtener el mes del ticket (0-11)
@@ -383,9 +396,13 @@ const ClassifyPage = () => {
     setDateFilteredAssignedList(dateFilteredAssignedList);
     setDateFilteredInProgressList(dateFilteredInProgressList);
 
-    const totalFilteredTicket = dateFilteredAssignedList.length + dateFilteredInProgressList.length + dateFilteredPlanningList.length;
-    console.log("La sumaaa", totalFilteredTicket)
-    setTotalPagesFilter(Math.ceil(totalFilteredTicket))
+    const totalFilteredTicket = Math.max(
+      dateFilteredAssignedList.length,
+      dateFilteredInProgressList.length,
+      dateFilteredPlanningList.length
+    );
+    setTotalPagesFilter(totalFilteredTicket)
+    console.log(totalFilteredTicket + " TOTAAAAAL FILTER MAXIMO")
   }, [selectedMonth, selectedCategory]);
 
 
@@ -718,7 +735,7 @@ const ClassifyPage = () => {
             }}
           >
             {/* {` Página ${currentPage} de ${allPage == -1 ? "-" : allPage} `} */}
-            {` Página ${currentPage} de ${selectedCategory !== '' || selectedMonth !== '' ? Math.ceil(totalPagesFilter / pageSize) : allPage == -1 ? "-" : allPage-1} `}
+            {` Página ${currentPage} de ${selectedCategory !== '' || selectedMonth !== '' ? Math.ceil(totalPagesFilter / pageSize) : allPage == -1 ? "-" : allPage} `}
 
           </span>
           <Button
@@ -728,10 +745,8 @@ const ClassifyPage = () => {
                 (
                   currentPage >= Math.ceil(totalPagesFilter / pageSize) - 1
                 ) :
-                (planningList.length +
-                  assignedList.length +
-                  inPorgressList.length <=
-                  indexOfLastCard)
+                (currentPage >=
+                  allPage)
             }
             variant="outlined"
             style={{

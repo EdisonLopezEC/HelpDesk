@@ -196,7 +196,7 @@ const ClassifyPage = () => {
   };
 
   const handleClick = (valor) => {
-    if (valor === "solicitado") {
+    if (valor === "en espera") {
       setListModal(holdList);
       console.log('-----------> LISTA SOLICITADO: ', listModal)
       setTitleTransition("Tickets en proceso");
@@ -208,7 +208,7 @@ const ClassifyPage = () => {
 
 
     }
-    else if (valor === "en espera") {
+    else if (valor === "solicitado") {
       setListModal(requiredList);
       console.log('-----------> LISTA SOLICITADO: ', listModal)
       setTitleTransition("En espera de un técnico");
@@ -530,7 +530,6 @@ const ClassifyPage = () => {
 
           {!isLoading && (selectedMonth !== "" || selectedCategory !== "")
             ?
-
             (
               dateFilteredPlanningList.length > 0 ? (
                 dateFilteredPlanningList
