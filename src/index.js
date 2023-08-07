@@ -59,7 +59,7 @@ function App() {
         value={{ stadisticsNumber, setStadisticsNumber }}
       >
         <UserContext.Provider value={{ user, setUser }}>
-          <RouterProvider router={routerTechnical}>
+          <RouterProvider router={router}>
             <Routes />
           </RouterProvider>
         </UserContext.Provider>
@@ -72,7 +72,7 @@ function App() {
         value={{ stadisticsNumber, setStadisticsNumber }}
       >
         <UserContext.Provider value={{ user, setUser }}>
-          <RouterProvider router={router}>
+          <RouterProvider router={routerTechnical}>
             <Routes />
           </RouterProvider>
         </UserContext.Provider>

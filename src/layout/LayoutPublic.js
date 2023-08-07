@@ -38,6 +38,7 @@ const LayoutPublic = () => {
   }
   let button1Style = {};
   let button2Style = {};
+  let button3Style = {};
 
   if (currentPage === process.env.PUBLIC_URL + "/") {
     button1Style = { backgroundColor: "#f4f6f9", color: "black" };
@@ -45,12 +46,17 @@ const LayoutPublic = () => {
   } else if (currentPage === process.env.PUBLIC_URL + "/classify") {
     button1Style = { color: "white" };
     button2Style = { backgroundColor: "#f4f6f9", color: "black" };
-  } else if (currentPage === process.env.PUBLIC_URL + "/technical") {
+  } else if (currentPage === process.env.PUBLIC_URL + "/technical" && user.rol !== "ROLE_HELPDESK" ) {
     button1Style = { color: "white" };
     button2Style = { backgroundColor: "#f4f6f9", color: "black" };
   }else if(currentPage === process.env.PUBLIC_URL + "/categorizador"){
     button1Style = { color: "white" };
     button2Style = { backgroundColor: "#f4f6f9", color: "black" };
+  }else if(user.rol === "ROLE_HELPDESK" && currentPage === process.env.PUBLIC_URL + "/technical"){
+    button1Style = { color: "white" };
+    button2Style = { color: "white" };
+    button3Style = { backgroundColor: "#f4f6f9", color: "black" };
+
   }
 
   return (
@@ -112,7 +118,8 @@ const LayoutPublic = () => {
             </NavLink>
 
             {user.rol === "ROLE_HELPDESK" ? (
-              <NavLink
+              <>
+            <NavLink
                 to={process.env.PUBLIC_URL + "/classify"}
                 onClick={() => {
                   setCurrentPage(process.env.PUBLIC_URL + "/classify");
@@ -126,6 +133,25 @@ const LayoutPublic = () => {
               >
                 Gestionar
               </NavLink>
+
+              <NavLink
+                to={process.env.PUBLIC_URL + "/technical"}
+                onClick={() => {
+                  setCurrentPage(process.env.PUBLIC_URL + "/classify");
+                  setIsOpen(!isOpen);
+                }}
+                style={{
+                  padding: "10px",
+                  borderRadius: "10px",
+                  ...button3Style,
+                }}
+              >
+                Atender
+              </NavLink>
+              </>
+    
+
+              
             ) : null}
 
             {user.rol === "ROLE_HELPDESK_TECNICO" ? (

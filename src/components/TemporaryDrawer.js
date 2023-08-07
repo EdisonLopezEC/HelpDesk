@@ -5,9 +5,20 @@ import Button from "@mui/material/Button";
 import List from "@mui/material/List";
 import Divider from "@mui/material/Divider";
 import { width } from "@mui/system";
-import { Alert, Dialog, DialogActions, DialogContent, DialogTitle, Snackbar, Stack, Typography } from "@mui/material";
+import {
+  Alert,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  Snackbar,
+  Stack,
+  Typography,
+} from "@mui/material";
 import axios from "axios";
 import { useState } from "react";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 
 export default function TemporaryDrawer({
@@ -17,7 +28,8 @@ export default function TemporaryDrawer({
   mensaje,
   id,
   handleSend,
-  handleDelete
+  handleDelete,
+  handleOpenModal,
 }) {
   const [isMobile, setIsMobile] = React.useState(window.innerWidth <= 768);
 
@@ -29,8 +41,6 @@ export default function TemporaryDrawer({
 
   fecha = new Date(fecha);
 
-
-
   const handleCloseDialog = () => {
     // Aquí puedes realizar la lógica para eliminar el elemento con el id proporcionado
     setOpenDialog(false); // Cierra el diálogo de confirmación
@@ -39,10 +49,6 @@ export default function TemporaryDrawer({
   const handleClickOpenDialog = () => {
     setOpenDialog(true); // Abre el diálogo de confirmación
   };
-
-
-
-
 
   const fechaEc =
     fecha.toLocaleDateString("es-EC", {
@@ -213,11 +219,7 @@ export default function TemporaryDrawer({
           Seleccione una categoría!.
         </Alert>
       </Snackbar>
-
-      
     </Box>
-
-    
   );
 
   return (
@@ -225,9 +227,11 @@ export default function TemporaryDrawer({
       {["right"].map((anchor) => (
         <React.Fragment key={anchor}>
           <Button onClick={toggleDrawer(anchor, true)}>Administrar</Button>
-          <Button variant="outlined" onClick={handleClickOpenDialog} >
-            Eliminar
-          </Button>
+          <Divider orientation="vertical" flexItem />
+          <IconButton aria-label="delete" onClick={handleClickOpenDialog} color="info">
+            <DeleteIcon />
+          </IconButton>
+
           <Drawer
             anchor={anchor}
             open={state[anchor]}
@@ -238,7 +242,7 @@ export default function TemporaryDrawer({
         </React.Fragment>
       ))}
 
-<Dialog open={openDialog} onClose={handleCloseDialog}>
+      <Dialog open={openDialog} onClose={handleCloseDialog}>
         <DialogTitle>Confirmar Eliminación</DialogTitle>
         <DialogContent>
           <p>¿Estás seguro de que deseas eliminar este elemento?</p>

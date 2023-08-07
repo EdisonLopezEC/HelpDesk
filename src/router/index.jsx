@@ -4,6 +4,7 @@ import HomePage from "../pages/HomePage";
 import ClassifyPage from "../pages/ClassifyPage";
 import SignInSide from "../components/SignInSide";
 import TechnicalPage from "../pages/TechnicalPage";
+import PageNotFound from "../pages/PageNotFound";
 
 export const router = createBrowserRouter([
   {
@@ -24,17 +25,14 @@ export const router = createBrowserRouter([
 
           },
           {
-            path: `${process.env.PUBLIC_URL}/login`,
-            // path: "/login",
-            element: <SignInSide/>,
-            exact: true
-
-          },
-          {
             path: `${process.env.PUBLIC_URL}/technical`,
             // path: "/technical",
             element: <TechnicalPage/>,
             exact: true
+          },
+          {
+            path: "*",
+            element: <PageNotFound/>
           }
     ]
   },

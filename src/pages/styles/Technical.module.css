@@ -50,30 +50,67 @@
     
     flex-direction: column;
   }
-
-
+  
   .pagination-container {
     display: flex;
     justify-content: center;
     align-items: center;
-  }
-
-
-  .pagination-container {
-    position: fixed;
-    left: 1;
-    bottom: 0;
+    background-color: #f2f2f2;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
     width: 25%;
-    background-color: #fff;
-    border-radius: 1rem;
-    padding: .3rem;
-    
+    position: fixed;
+    bottom: 20px;
+    box-shadow: 0 0 0 transparent; /* Add a transparent box-shadow by default */
+    overflow: hidden; /* Add overflow hidden to prevent height increase on hover */
+    transition: box-shadow 0.2s ease; /* Add a transition for smooth hover effect */
+    /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); */
+  
   }
-  @media (max-width: 768px) {
-    .pagination-container {
-      font-size: 14px;
-      margin-top: 10px;
-      width: 100%;
+  
+  /* Apply the desired box-shadow on hover */
+  .pagination-container:hover {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Style the buttons */
+  .pagination-container button {
+    margin: 0 5px;
+    padding: 8px 12px;
+    /* border: none; */
+    border-radius: 4px;
+    cursor: pointer;
+    /* Add fixed width to the buttons */
+    width: 60px;
+    /* Add a transparent box-shadow to the buttons to prevent container expansion */
+    box-shadow: 0 0 0 transparent;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease; 
+  }
+  
+  /* Apply the desired box-shadow on button hover */
 
+  /* Style the page numbers */
+  .pagination-container span {
+    font-size: 16px;
+    margin: 0 5px;
+    cursor: pointer;
+  }
+  
+  @media (max-width: 1200px) {
+    .pagination-container {
+      width: 40%;
     }
   }
+  
+  @media (max-width: 900px) {
+    .pagination-container {
+      width: 60%;
+    }
+  }
+  
+  @media (max-width: 600px) {
+    .pagination-container {
+      width: 80%;
+    }
+  }
+  

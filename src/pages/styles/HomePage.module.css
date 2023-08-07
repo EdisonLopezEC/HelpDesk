@@ -1,16 +1,53 @@
-
-.barContainer{
-    display: flex;
-    justify-content:center;
-    align-items:center;
-    width: 50%;
-    height: 80vh;
-    padding: 20px
+/* Ajustar la altura del encabezado según el valor real */
+.header {
+  height: 80px;
 }
+
+.fila {
+  display: flex;
+  flex-direction: column; /* Cambiar a columna en todos los tamaños de pantalla */
+  justify-content: center; /* Centrar horizontalmente el contenido */
+  align-items: center; /* Centrar verticalmente el contenido */
+  min-height: calc(100vh - 80px); /* Restar la altura del encabezado del viewport height */
+}
+
+.barContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50%; /* Porcentaje del ancho de la pantalla */
+  height: 80vh; /* Altura del contenedor en el 80% del viewport height */
+  padding: 20px; /* Ajustar el padding si es necesario */
+}
+
+
+/* Estilos para pantallas más pequeñas */
 @media screen and (max-width: 768px) {
-    .barContainer {
-      width: 90%;
-      height: 60vh;
-      padding: 10px;
-    }
+  .fila {
+    justify-content: flex-start; /* Alinear el contenido al inicio en pantallas pequeñas */
+    height: auto; /* Revertir la altura en pantallas más pequeñas */
+  }
+
+  .barContainer {
+    width: 90%; /* Reducir el ancho del contenedor en pantallas pequeñas */
+    height: 60vh; /* Altura del contenedor en el 60% del viewport height */
+    padding: 10px; /* Ajustar el padding si es necesario */
+  }
+
+  .cardContainer {
+    width: 100%; /* Ocupar el 90% del ancho disponible en pantallas pequeñas */
+  }
+}
+
+/* Estilos para pantallas grandes */
+@media screen and (min-width: 769px) {
+  .fila {
+    flex-direction: row; /* Volver a fila en pantallas más grandes */
+  }
+
+  .barContainer {
+    width: 70%; /* Reducir el ancho del contenedor en pantallas grandes */
+    height: 70vh; /* Altura del contenedor en el 70% del viewport height */
+  }
+
 }

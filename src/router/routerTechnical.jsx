@@ -5,6 +5,7 @@ import ClassifyPage from "../pages/ClassifyPage";
 import SignInSide from "../components/SignInSide";
 import TechnicalPage from "../pages/TechnicalPage";
 import SorterPage from "../pages/SorterPage";
+import PageNotFound from "../pages/PageNotFound";
 
 export const routerTechnical = createBrowserRouter([
   {
@@ -20,6 +21,10 @@ export const routerTechnical = createBrowserRouter([
             path: `${process.env.PUBLIC_URL}/technical`,
             element: <TechnicalPage/>,
             exact: true
+          },
+          {
+            path: '*',
+            element: <PageNotFound/>
           }
     ]
   },  

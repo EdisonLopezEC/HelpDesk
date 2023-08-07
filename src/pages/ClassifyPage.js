@@ -241,108 +241,17 @@ const ClassifyPage = () => {
     setCurrentPage((prevPage) => prevPage - 1);
   };
 
-  // Función para verificar si una fecha es hoy
-  const isToday = (date) => {
-    const today = new Date();
-    return (
-      date.getDate() === today.getDate() &&
-      date.getMonth() === today.getMonth() &&
-      date.getFullYear() === today.getFullYear()
-    );
-  };
-
-  // Función para verificar si una fecha está dentro de la semana actual
-  const isThisWeek = (date) => {
-    const today = new Date();
-    const weekStart = new Date(today.setDate(today.getDate() - today.getDay()));
-    const weekEnd = new Date(today.setDate(today.getDate() + 6));
-    return date >= weekStart && date <= weekEnd;
-  };
-
-  // Función para verificar si una fecha está dentro del mes actual
-  const isThisMonth = (date) => {
-    const today = new Date();
-    return (
-      date.getMonth() === today.getMonth() &&
-      date.getFullYear() === today.getFullYear()
-    );
-  };
-
-  // Función para verificar si una fecha está dentro del año actual
-  const isThisYear = (date) => {
-    const today = new Date();
-    return date.getFullYear() === today.getFullYear();
-  };
-
-  const filteredPlanningList = planningList.filter((ticket) => {
-    switch (filter) {
-      case "today":
-        // Filtrar por tickets de hoy
-        return isToday(new Date(ticket.fecha));
-      case "thisWeek":
-        // Filtrar por tickets de esta semana
-        return isThisWeek(new Date(ticket.fecha));
-      case "thisMonth":
-        // Filtrar por tickets de este mes
-        return isThisMonth(new Date(ticket.fecha));
-      case "thisYear":
-        // Filtrar por tickets de este año
-        return isThisYear(new Date(ticket.fecha));
-      default:
-        return true; // Mostrar todos los tickets por defecto
-    }
-  });
-
-  const filteredAssignedList = assignedList.filter((ticket) => {
-    switch (filter) {
-      case "today":
-        // Filtrar por tickets de hoy
-        return isToday(new Date(ticket.fecha));
-      case "thisWeek":
-        // Filtrar por tickets de esta semana
-        return isThisWeek(new Date(ticket.fecha));
-      case "thisMonth":
-        // Filtrar por tickets de este mes
-        return isThisMonth(new Date(ticket.fecha));
-      case "thisYear":
-        // Filtrar por tickets de este año
-        return isThisYear(new Date(ticket.fecha));
-      default:
-        return true; // Mostrar todos los tickets por defecto
-    }
-  });
-
-  const filteredInProgressList = inPorgressList.filter((ticket) => {
-    switch (filter) {
-      case "today":
-        // Filtrar por tickets de hoy
-        return isToday(new Date(ticket.fecha));
-      case "thisWeek":
-        // Filtrar por tickets de esta semana
-        return isThisWeek(new Date(ticket.fecha));
-      case "thisMonth":
-        // Filtrar por tickets de este mes
-        return isThisMonth(new Date(ticket.fecha));
-      case "thisYear":
-        // Filtrar por tickets de este año
-        return isThisYear(new Date(ticket.fecha));
-      default:
-        return true; // Mostrar todos los tickets por defecto
-    }
-  });
-
-
-  const visiblePlanningList = filteredPlanningList.slice(
+  const visiblePlanningList = planningList.slice(
     indexOfFirstCard,
     indexOfLastCard
   );
 
-  const visibleAssignedList = filteredAssignedList.slice(
+  const visibleAssignedList = assignedList.slice(
     indexOfFirstCard,
     indexOfLastCard
   );
 
-  const visibleInProgressList = filteredInProgressList.slice(
+  const visibleInProgressList = inPorgressList.slice(
     indexOfFirstCard,
     indexOfLastCard
   );
@@ -353,11 +262,16 @@ const ClassifyPage = () => {
 
 
 
+  const maxLength = Math.max(
+    planningList.length,
+    assignedList.length,
+    inPorgressList.length
+  );
+
+
   const allPage = Math.ceil(
-    planningList.length +
-    assignedList.length +
-    inPorgressList.length / pageSize
-  ) - 1;
+    maxLength / pageSize
+  );
 
   const assignedListLength = dateFilteredAssignedList ? dateFilteredAssignedList.length : 0;
   const inProgressListLength = dateFilteredInProgressList ? dateFilteredInProgressList.length : 0;
@@ -367,13 +281,31 @@ const ClassifyPage = () => {
 
 
 
+
+
   const [totalPagesFilter, setTotalPagesFilter] = useState(0);
 
 
 
   useEffect(() => {
-    console.log('se ejecuto el filtro')
-    const dateFilteredPlanningList = visiblePlanningList.filter((ticket) => {
+    console.log('se ejecuto el filtro useee')
+    const dateFilteredPlanningList = planningList.filter((ticket) => {
+      const ticketDate = new Date(ticket.fecha);
+      const ticketMonth = ticketDate.getMonth(); // Obtener el mes del ticket (0-11)
+
+      if (selectedMonth !== "" && selectedMonth !== ticketMonth) {
+        return false; // Filtrar si el mes seleccionado no coincide
+      }
+
+      if (selectedCategory !== "" && selectedCategory !== ticket.categoria) {
+        return false; // Filtrar si la categoría seleccionada no coincide
+      }
+
+      return true; // Mantener el ticket si pasa los filtros de mes y categoría
+    });
+    console.log('filtroo si')
+
+    const dateFilteredAssignedList = assignedList.filter((ticket) => {
       const ticketDate = new Date(ticket.fecha);
       const ticketMonth = ticketDate.getMonth(); // Obtener el mes del ticket (0-11)
 
@@ -388,22 +320,7 @@ const ClassifyPage = () => {
       return true; // Mantener el ticket si pasa los filtros de mes y categoría
     });
 
-    const dateFilteredAssignedList = visibleAssignedList.filter((ticket) => {
-      const ticketDate = new Date(ticket.fecha);
-      const ticketMonth = ticketDate.getMonth(); // Obtener el mes del ticket (0-11)
-
-      if (selectedMonth !== "" && selectedMonth !== ticketMonth) {
-        return false; // Filtrar si el mes seleccionado no coincide
-      }
-
-      if (selectedCategory !== "" && selectedCategory !== ticket.categoria) {
-        return false; // Filtrar si la categoría seleccionada no coincide
-      }
-
-      return true; // Mantener el ticket si pasa los filtros de mes y categoría
-    });
-
-    const dateFilteredInProgressList = visibleInProgressList.filter((ticket) => {
+    const dateFilteredInProgressList = inPorgressList.filter((ticket) => {
       const ticketDate = new Date(ticket.fecha);
       const ticketMonth = ticketDate.getMonth(); // Obtener el mes del ticket (0-11)
 
@@ -420,15 +337,37 @@ const ClassifyPage = () => {
 
 
 
-    // Actualizar las variables de estado con los tickets filtrados
-    setDateFilteredPlanningList(dateFilteredPlanningList);
-    setDateFilteredAssignedList(dateFilteredAssignedList);
-    setDateFilteredInProgressList(dateFilteredInProgressList);
+    // Actualizar las variables de estado con los tickets filtrados\
+   
+    
 
-    const totalFilteredTicket = dateFilteredAssignedList.length + dateFilteredInProgressList.length + dateFilteredPlanningList.length;
+    setDateFilteredPlanningList(dateFilteredPlanningList.slice(
+    indexOfFirstCard,
+    indexOfLastCard
+  ));
+    setDateFilteredAssignedList(dateFilteredAssignedList.slice(
+      indexOfFirstCard,
+      indexOfLastCard
+    ))
+
+    setDateFilteredInProgressList(dateFilteredInProgressList.slice(
+      indexOfFirstCard,
+      indexOfLastCard
+    ))
+
+    // const totalFilteredTicket = dateFilteredAssignedList.length + dateFilteredInProgressList.length + dateFilteredPlanningList.length;
+    
+    
+    const totalFilteredTicket = Math.max(
+      dateFilteredAssignedList.length,
+      dateFilteredInProgressList.length,
+      dateFilteredPlanningList.length
+    );
+
+
     console.log("La sumaaa", totalFilteredTicket)
-    setTotalPagesFilter(Math.ceil(totalFilteredTicket))
-  }, [selectedMonth, selectedCategory]);
+    setTotalPagesFilter(totalFilteredTicket)
+  }, [selectedMonth, selectedCategory, assignedList, inPorgressList, indexOfFirstCard, indexOfLastCard, planningList]);
 
 
 
@@ -447,7 +386,9 @@ const ClassifyPage = () => {
         >
           Gestión de tickets
         </h1>
-        <Button aria-label="delete" onClick={() => { handleClick("filtro") }}>
+        <Button aria-label="delete" onClick={() => { handleClick("filtro") }}
+          variant={selectedMonth !== ""|| selectedCategory !== "" ? "contained" : "text"}
+        >
           Filtrar ▾
         </Button>
       </div>
@@ -500,6 +441,8 @@ const ClassifyPage = () => {
               <MenuItem value="soporte">Soporte</MenuItem>
               <MenuItem value="infraestructura">Infraestructura</MenuItem>
               <MenuItem value="administracion">Administracion</MenuItem>
+              <MenuItem value="desarrollo">Desarrollo</MenuItem>
+
               {/* Agregar más categorías */}
             </Select>
           </FormControl>
@@ -795,7 +738,7 @@ const ClassifyPage = () => {
             }}
           >
             {/* {` Página ${currentPage} de ${allPage == -1 ? "-" : allPage} `} */}
-            {` Página ${currentPage} de ${selectedCategory !== '' || selectedMonth !== '' ? Math.ceil(totalPagesFilter / pageSize) : allPage == -1 ? "-" : allPage} `}
+            {` Página ${currentPage} de ${selectedCategory !== '' || selectedMonth !== '' ? Math.ceil(totalPagesFilter / pageSize) : allPage === -1 ? "-" : allPage} `}
 
           </span>
           <Button
@@ -803,7 +746,7 @@ const ClassifyPage = () => {
             disabled={
               (selectedCategory !== "" || selectedMonth !== "") ?
                 (
-                  currentPage >= Math.ceil(totalPagesFilter / pageSize) - 1
+                  currentPage >= Math.ceil(totalPagesFilter / pageSize)
                 ) :
                 (planningList.length +
                   assignedList.length +

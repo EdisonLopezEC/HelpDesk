@@ -37,15 +37,21 @@ export default function TransitionsModal({
   const [open, setOpen] = React.useState(abrir);
   const handleClose = handleCloseModal;
   const [lista, setLista] = React.useState([]);
+    const [isDrawerOpen, setIsDrawerOpen] = React.useState(false); // Nuevo estado para controlar el TemporaryDrawer
+
   React.useEffect(() => {
     setOpen(abrir);
   }, [abrir]);
 
   const handleCloseModify = () => {
-    setOpen(false); // Close the modal by setting the open state to false
-    handleCloseModal(); // Call the handleCloseModal function passed as prop
+    setOpen(false); // Cerrar el TransitionModal estableciendo el estado open en false
+    handleCloseModal(); // Llamar a la función handleCloseModal pasada como prop
   };
 
+  const handleOpenDrawer = () => {
+    setIsDrawerOpen(false); // Abrir el TemporaryDrawer estableciendo el estado isDrawerOpen en true
+    handleCloseModify(); // Cerrar el TransitionModal llamando a la función handleCloseModify
+  };
 
   return (
     <div>
@@ -104,6 +110,7 @@ export default function TransitionsModal({
                 <>
                   <CardComplete
                     handleClose={handleCloseModify}
+                    handleOpenDrawer={handleOpenDrawer}
                     remitente={ticket.remitente}
                     categoria={ticket.categoria}
                     id={ticket.id}

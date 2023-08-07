@@ -1,15 +1,9 @@
 import React, { useState, useEffect, useContext } from "react";
 import styles from "./styles/ClassifyPage.module.css";
-import StickyHeadTable from "../components/StickyHeadTable";
 import CardBoard from "../components/CardBoard";
 import Chip from "@mui/material/Chip";
-import { Button, Card, CircularProgress } from "@mui/material";
-import TemporaryDrawer from "../components/TemporaryDrawer";
-import CardProgress from "../components/CardProgress";
-import CardComplete from "../components/CardComplete";
+import { CircularProgress } from "@mui/material";
 import axios from "axios";
-import TransitionsModal from "../components/TransitionsModal";
-import { UserContext } from "../context/UserContext";
 import { StadisticsContext } from "../context/StadisticsContext";
 import "animate.css";
 
@@ -21,10 +15,13 @@ const SorterPage = () => {
   }, []);
   const [planningList, setPlanningList] = useState([]);
   const [assignedList, setassignedList] = useState([]);
-  const [inPorgressList, setInPorgressList] = useState([]);
   const [isLoading, setIsLoading] = useState(true); // Nuevo estado para indicar si está cargando
-
-  const [completeList] = useState([]);
+  const token = localStorage.getItem("token");
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
 
   useEffect(() => {
     setIsLoading(true);
@@ -33,8 +30,6 @@ const SorterPage = () => {
       .then((res) => {
         console.log(res.data);
         const newPlanningList = [];
-        const newassignedList = [];
-        const newinProgressList = [];
         res.data.forEach((element) => {
           switch (element.estado) {
             case "Solicitado":
@@ -53,15 +48,13 @@ const SorterPage = () => {
       });
   }, []);
 
-  const [open, setOpen] = useState(false);
-
   // Actualizar ticket
   const handleSend = (ticketId, categoria) => {
     axios
       .put(`${process.env.REACT_APP_API_URLS}/tickets/${ticketId}`, {
         categoria: categoria,
         estado: "Asignado",
-      })
+      },config)
       .then((response) => {
         console.log("Entro al planing");
         setPlanningList(
@@ -76,35 +69,7 @@ const SorterPage = () => {
       });
   };
 
-  const handleAttend = (ticketId, categoria) => {
-    axios
-      .put(`${process.env.PUBLIC_URL}/tickets/${ticketId}`, {
-        estado: "En Proceso",
-        categoria: categoria,
-      })
-      .then((response) => {
-        console.log(response);
-        setassignedList(
-          assignedList.filter((ticket) => ticket.id !== ticketId)
-        );
-        const ticket = assignedList.find((ticket) => ticket.id === ticketId);
-        setInPorgressList([ticket, ...inPorgressList]);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
-  const handleClick = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const { user, setUser } = useContext(UserContext);
-  const { stadisticsNumber, setStadisticsNumber} = useContext(StadisticsContext);
+  const { setStadisticsNumber} = useContext(StadisticsContext);
 
   return (
     <div className={styles.container}>
@@ -153,10 +118,7 @@ const SorterPage = () => {
           {/* Boton para agregar */}
           <hr />
           {/* <Button variant="outlined">+</Button> */}
-        </div>
-
-
- 
+        </div> 
       </div>
     </div>
   );

@@ -27,7 +27,8 @@ const HomePage = () => {
     return () => clearInterval(intervalId);
   }, [chartType]);
 
-  const yearSelected = localStorage.getItem('selectedYear')
+
+  const yearSelected = localStorage.getItem('selectedYear') || new Date().getFullYear()-10;
   // const {stadisticsNumber} = useContext(StadisticsContext);
   useEffect(() => {
     document.title = "Inicio";
@@ -109,29 +110,31 @@ const HomePage = () => {
   console.log("se render");
   return (
     <>
-      <div className="fila">
+    <div className={styles.fila}>
+    <div className={styles.cardContainer}>
         <Card
           cerrados={completado}
           abiertos={solicitado}
           proceso={enEspera}
           totales={totales}
         />
-        <div className={styles.barContainer}>
-          {chartType === "bar" ? (
-            <Bar
-              className="animate__animated animate__zoomIn"
-              data={data}
-              options={options}
-            ></Bar>
-          ) : (
-            <Pie
-              className="animate__animated animate__zoomIn"
-              data={data}
-              options={options}
-            ></Pie>
-          )}
-        </div>
       </div>
+      <div className={styles.barContainer}>
+        {chartType === "bar" ? (
+          <Bar
+            className="animate__animated animate__zoomIn"
+            data={data}
+            options={options}
+          ></Bar>
+        ) : (
+          <Pie
+            className="animate__animated animate__zoomIn"
+            data={data}
+            options={options}
+          ></Pie>
+        )}
+      </div>
+    </div>
     </>
   );
 };

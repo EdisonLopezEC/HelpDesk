@@ -4,7 +4,20 @@ import StickyHeadTable from "../components/StickyHeadTable";
 import CardBoard from "../components/technicalComponents/CardBoard";
 import CardProgress from "../components/technicalComponents/CardProgress";
 import Chip from "@mui/material/Chip";
-import { Button, Card, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, IconButton, InputLabel, MenuItem, Select } from "@mui/material";
+import {
+  Button,
+  Card,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  FormControl,
+  IconButton,
+  InputLabel,
+  MenuItem,
+  Select,
+} from "@mui/material";
 import TemporaryDrawer from "../components/TemporaryDrawer";
 import CardComplete from "../components/CardComplete";
 import axios from "axios";
@@ -12,8 +25,8 @@ import TransitionsModal from "../components/TransitionsModal";
 import { UserContext } from "../context/UserContext";
 import "animate.css";
 import { StadisticsContext } from "../context/StadisticsContext";
-import { } from '@mui/material';
-
+import FilterAltIcon from '@mui/icons-material/FilterAlt';
+import FilterAltOffIcon from '@mui/icons-material/FilterAltOff';
 
 const ClassifyPage = () => {
   //Listas del board
@@ -24,6 +37,32 @@ const ClassifyPage = () => {
   const [pageSize, setPageSize] = useState(5); // Puedes ajustar el tamaño de página según tus necesidades
   const perPageOptions = [5, 10, "all"];
   const [filter, setFilter] = useState("all");
+
+  const token = localStorage.getItem("token");
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  //Eliminar ticket
+  const handleDelete = (ticketId) => {
+
+    axios
+      .put(`${process.env.REACT_APP_API_URLS}/tickets/${ticketId}`, {
+        categoria: null,
+        estado: "cancelado",
+      })
+      .then((response) => {
+        console.log(response);
+        setPlanningList(
+          planningList.filter((ticket) => ticket.id !== ticketId)
+        );
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   const { stadisticsNumber, setStadisticsNumber } =
     useContext(StadisticsContext);
@@ -39,12 +78,20 @@ const ClassifyPage = () => {
   const [isLoading, setIsLoading] = useState(true); // Nuevo estado para indicar si está cargando
 
   const [completeList] = useState([]);
-  const [selectedYear, setSelectedYear] = useState(localStorage.getItem("selectedYear"));
+  const [selectedYear, setSelectedYear] = useState(
+    localStorage.getItem("selectedYear")
+  );
+
+
+
+
 
   useEffect(() => {
+    
+    console.log("SIIIIIII TOKEEEEEN "+ token)
     setIsLoading(true);
     axios
-      .get(`${process.env.REACT_APP_API_URLS}/tickets`)
+      .get(`${process.env.REACT_APP_API_URLS}/tickets`,config)
       .then((res) => {
         console.log(res.data);
         const newPlanningList = [];
@@ -54,14 +101,14 @@ const ClassifyPage = () => {
         res.data.forEach((element) => {
           const fecha = new Date(element.fecha);
           console.log("Aqui fechas de los element", element.fechaCompletada);
-          const fechaEc = fecha.toLocaleDateString('es-EC', {
-            day: '2-digit',
-            month: '2-digit',
-            year: '2-digit',
+          const fechaEc = fecha.toLocaleDateString("es-EC", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "2-digit",
             hour12: false,
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit'
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
           });
 
           const elementYear = fechaEc.slice(6, 8); // Obtener los últimos dos dígitos del año
@@ -98,7 +145,6 @@ const ClassifyPage = () => {
       });
   }, []);
 
-
   const [open, setOpen] = useState(false);
 
   // Actualizar ticket
@@ -134,7 +180,6 @@ const ClassifyPage = () => {
         console.log(error);
       });
   };
-
 
   const handleAttend = (ticketId, remitente, observaciones) => {
     axios
@@ -228,7 +273,6 @@ const ClassifyPage = () => {
     return date.getFullYear() === today.getFullYear();
   };
 
-
   const filteredPlanningList = planningList.filter((ticket) => {
     switch (filter) {
       case "today":
@@ -286,7 +330,6 @@ const ClassifyPage = () => {
     }
   });
 
-
   const visiblePlanningList = filteredPlanningList.slice(
     indexOfFirstCard,
     indexOfLastCard
@@ -303,13 +346,11 @@ const ClassifyPage = () => {
   );
 
   const [dateFilteredPlanningList, setDateFilteredPlanningList] = useState();
-  const [dateFilteredInProgressList, setDateFilteredInProgressList] = useState();
+  const [dateFilteredInProgressList, setDateFilteredInProgressList] =
+    useState();
   const [dateFilteredAssignedList, setDateFilteredAssignedList] = useState();
 
-
-
-  console.log('AQUII DATEFILTER' + dateFilteredInProgressList)
-
+  console.log("AQUII DATEFILTER" + dateFilteredInProgressList);
 
   const maxLength = Math.max(
     planningList.length,
@@ -317,32 +358,36 @@ const ClassifyPage = () => {
     inPorgressList.length
   );
 
-  console.log(maxLength + "AQUI MAX LENGH")
+  console.log(maxLength + "AQUI MAX LENGH");
 
-  const allPage = Math.ceil(
-    maxLength / pageSize
-  );
+  const allPage = Math.ceil(maxLength / pageSize);
 
-  console.log(allPage + "AQUI MAX CEIL")
+  console.log(allPage + "AQUI MAX CEIL");
 
-  
+  console.log("ALL PAGEEEE========", allPage);
 
-  console.log('ALL PAGEEEE========', allPage)
+  const assignedListLength = dateFilteredAssignedList
+    ? dateFilteredAssignedList.length
+    : 0;
+  const inProgressListLength = dateFilteredInProgressList
+    ? dateFilteredInProgressList.length
+    : 0;
+  const planningListLength = dateFilteredPlanningList
+    ? dateFilteredPlanningList.length
+    : 0;
 
-  const assignedListLength = dateFilteredAssignedList ? dateFilteredAssignedList.length : 0;
-  const inProgressListLength = dateFilteredInProgressList ? dateFilteredInProgressList.length : 0;
-  const planningListLength = dateFilteredPlanningList ? dateFilteredPlanningList.length : 0;
+  const allPageFilter =
+    Math.ceil(
+      (assignedListLength + inProgressListLength + planningListLength) /
+        pageSize
+    ) - 1 || 0;
 
-  const allPageFilter = Math.ceil((assignedListLength + inProgressListLength + planningListLength) / pageSize) - 1 || 0;
-
-
-  console.log('ESTE ES EL ALL' + allPageFilter)
-
+  console.log("ESTE ES EL ALL" + allPageFilter);
 
   const [totalPagesFilter, setTotalPagesFilter] = useState(0);
 
   useEffect(() => {
-    console.log('se ejecuto el filtro')
+    console.log("se ejecuto el filtro");
     const dateFilteredPlanningList = visiblePlanningList.filter((ticket) => {
       const ticketDate = new Date(ticket.fecha);
       const ticketMonth = ticketDate.getMonth(); // Obtener el mes del ticket (0-11)
@@ -373,8 +418,22 @@ const ClassifyPage = () => {
       return true; // Mantener el ticket si pasa los filtros de mes y categoría
     });
 
+    // const dateFilteredInProgressList = visibleInProgressList.filter((ticket) => {
+    //   const ticketDate = new Date(ticket.fecha);
+    //   const ticketMonth = ticketDate.getMonth(); // Obtener el mes del ticket (0-11)
 
-    const dateFilteredInProgressList = visibleInProgressList.filter((ticket) => {
+    //   if (selectedMonth !== "" && selectedMonth !== ticketMonth) {
+    //     return false; // Filtrar si el mes seleccionado no coincide
+    //   }
+
+    //   if (selectedCategory !== "" && selectedCategory !== ticket.categoria) {
+    //     return false; // Filtrar si la categoría seleccionada no coincide
+    //   }
+
+    //   return true; // Mantener el ticket si pasa los filtros de mes y categoría
+    // });
+
+    const dateFilteredInProgressList = inPorgressList.filter((ticket) => {
       const ticketDate = new Date(ticket.fecha);
       const ticketMonth = ticketDate.getMonth(); // Obtener el mes del ticket (0-11)
 
@@ -389,41 +448,63 @@ const ClassifyPage = () => {
       return true; // Mantener el ticket si pasa los filtros de mes y categoría
     });
 
+    console.log("AQUI LISTA CON FILTROOO");
 
+    setDateFilteredPlanningList(
+      dateFilteredPlanningList.slice(indexOfFirstCard, indexOfLastCard)
+    );
+    setDateFilteredAssignedList(
+      dateFilteredAssignedList.slice(indexOfFirstCard, indexOfLastCard)
+    );
 
-    // Actualizar las variables de estado con los tickets filtrados
-    setDateFilteredPlanningList(dateFilteredPlanningList);
-    setDateFilteredAssignedList(dateFilteredAssignedList);
-    setDateFilteredInProgressList(dateFilteredInProgressList);
+    setDateFilteredInProgressList(
+      dateFilteredInProgressList.slice(indexOfFirstCard, indexOfLastCard)
+    );
 
     const totalFilteredTicket = Math.max(
       dateFilteredAssignedList.length,
       dateFilteredInProgressList.length,
       dateFilteredPlanningList.length
     );
-    setTotalPagesFilter(totalFilteredTicket)
-    console.log(totalFilteredTicket + " TOTAAAAAL FILTER MAXIMO")
-  }, [selectedMonth, selectedCategory]);
-
-
-
-
+    setTotalPagesFilter(totalFilteredTicket);
+    console.log(totalFilteredTicket + " TOTAAAAAL FILTER MAXIMO");
+  }, [
+    selectedMonth,
+    selectedCategory,
+    assignedList,
+    inPorgressList,
+    indexOfFirstCard,
+    indexOfLastCard,
+    planningList,
+  ]);
 
   return (
     <div className={styles.container}>
-      <div className={styles.header}
+      <div
+        className={styles.header}
         style={{
-          alignItems: "center"
+          alignItems: "center",
         }}
       >
         <h1
           style={{
-            marginRight: "20px"
+            marginRight: "20px",
           }}
-        >Gestiona los tickets de los técnicos</h1>
+        >
+          Gestiona los tickets de los técnicos
+        </h1>
 
-        <Button aria-label="delete" onClick={handleClick}>
-          Filtrar ▾
+        <Button
+          aria-label="delete"
+          onClick={handleClick}
+          variant={
+            selectedMonth !== "" || selectedCategory !== ""
+              ? "contained"
+              : "text"
+          }
+          endIcon={selectedMonth!=="" || selectedCategory !== "" ? <FilterAltOffIcon/> : <FilterAltIcon/>}
+        >
+          Filtrar
         </Button>
 
         {/* </div> */}
@@ -434,15 +515,13 @@ const ClassifyPage = () => {
         <DialogContent>
           <FormControl
             style={{
-              width: "15vw"
+              width: "15vw",
             }}
           >
-            <InputLabel
-            >Mes</InputLabel>
+            <InputLabel>Mes</InputLabel>
             <Select
               value={selectedMonth}
               onChange={(e) => setSelectedMonth(e.target.value)}
-
             >
               <MenuItem value="">Todos</MenuItem>
               <MenuItem value={0}>Enero</MenuItem>
@@ -458,13 +537,12 @@ const ClassifyPage = () => {
               <MenuItem value={10}>Noviembre</MenuItem>
               <MenuItem value={11}>Diciembre</MenuItem>
 
-
               {/* Agregar más meses */}
             </Select>
           </FormControl>
           <FormControl
             style={{
-              width: "15vw"
+              width: "15vw",
             }}
           >
             <InputLabel>Categoría</InputLabel>
@@ -476,6 +554,7 @@ const ClassifyPage = () => {
               <MenuItem value="soporte">Soporte</MenuItem>
               <MenuItem value="infraestructura">Infraestructura</MenuItem>
               <MenuItem value="administracion">Administracion</MenuItem>
+              <MenuItem value="desarrollo">Desarrollo</MenuItem>
               {/* Agregar más categorías */}
             </Select>
           </FormControl>
@@ -484,7 +563,6 @@ const ClassifyPage = () => {
           <Button onClick={handleClose}>Cerrar</Button>
         </DialogActions>
       </Dialog>
-
 
       {/* <StickyHeadTable/> */}
       <div className={styles.containerGrid}>
@@ -511,10 +589,9 @@ const ClassifyPage = () => {
               <CircularProgress />
             </div>
           ) : null}
-          {!isLoading && (selectedMonth !== "" || selectedCategory !== "")
-            ? (
-              dateFilteredPlanningList.length > 0 ? (
-                dateFilteredPlanningList
+          {!isLoading && (selectedMonth !== "" || selectedCategory !== "") ? (
+            dateFilteredPlanningList.length > 0 ? (
+              dateFilteredPlanningList
                 .sort((a, b) => new Date(b.fecha) - new Date(a.fecha))
                 .map((ticket) => (
                   <CardBoard
@@ -527,34 +604,31 @@ const ClassifyPage = () => {
                     handleSend={handleSend}
                     categoria={ticket.categoria}
                     handleAttend={handleAttend}
+                    handleDelete={handleDelete}
                   />
                 ))
-              ) : (
-                !isLoading ? <p>No hay tickets disponibles.</p> : null
-              )
-            ) : (
-              visiblePlanningList.length > 0 ? (
-                visiblePlanningList
-                  .sort((a, b) => new Date(b.fecha) - new Date(a.fecha))
-                  .map((ticket) => (
-                    <CardBoard
-                      mensaje={ticket.mensaje}
-                      key={ticket.id}
-                      asunto={ticket.asunto}
-                      fecha={ticket.fecha}
-                      remitente={ticket.remitente}
-                      id={ticket.id}
-                      handleSend={handleSend}
-                      categoria={ticket.categoria}
-                      handleAttend={handleAttend}
-                    />
-                  ))
-              ) : (
-                !isLoading ? <p>No hay tickets disponibles.</p> : null
-              )
-            )
-          }
-
+            ) : !isLoading ? (
+              <p>No hay tickets disponibles.</p>
+            ) : null
+          ) : visiblePlanningList.length > 0 ? (
+            visiblePlanningList
+              .sort((a, b) => new Date(b.fecha) - new Date(a.fecha))
+              .map((ticket) => (
+                <CardBoard
+                  mensaje={ticket.mensaje}
+                  key={ticket.id}
+                  asunto={ticket.asunto}
+                  fecha={ticket.fecha}
+                  remitente={ticket.remitente}
+                  id={ticket.id}
+                  handleSend={handleSend}
+                  categoria={ticket.categoria}
+                  handleAttend={handleAttend}
+                />
+              ))
+          ) : !isLoading ? (
+            <p>No hay tickets disponibles.</p>
+          ) : null}
 
           {/* <div></div> */}
           {/* Boton para agregar */}
@@ -584,10 +658,9 @@ const ClassifyPage = () => {
             </div>
           ) : null}
 
-          {!isLoading && (selectedMonth !== "" || selectedCategory !== "")
-            ? (
-              dateFilteredAssignedList.length > 0 ? (
-                dateFilteredAssignedList
+          {!isLoading && (selectedMonth !== "" || selectedCategory !== "") ? (
+            dateFilteredAssignedList.length > 0 ? (
+              dateFilteredAssignedList
                 .sort((a, b) => new Date(b.fecha) - new Date(a.fecha))
                 .map((ticket) => (
                   <CardProgress
@@ -602,31 +675,28 @@ const ClassifyPage = () => {
                     handleAttend={handleAttend}
                   />
                 ))
-              ) : (
-                !isLoading ? <p>No hay tickets disponibles.</p> : null
-              )
-            ) : (
-              visibleAssignedList.length > 0 ? (
-                visibleAssignedList
-                  .sort((a, b) => new Date(b.fecha) - new Date(a.fecha))
-                  .map((ticket) => (
-                    <CardProgress
-                      mensaje={ticket.mensaje}
-                      key={ticket.id}
-                      asunto={ticket.asunto}
-                      fecha={ticket.fecha}
-                      remitente={ticket.remitente}
-                      id={ticket.id}
-                      handleSend={handleSend}
-                      categoria={ticket.categoria}
-                      handleAttend={handleAttend}
-                    />
-                  ))
-              ) : (
-                !isLoading ? <p>No hay tickets disponibles.</p> : null
-              )
-            )
-          }
+            ) : !isLoading ? (
+              <p>No hay tickets disponibles.</p>
+            ) : null
+          ) : visibleAssignedList.length > 0 ? (
+            visibleAssignedList
+              .sort((a, b) => new Date(b.fecha) - new Date(a.fecha))
+              .map((ticket) => (
+                <CardProgress
+                  mensaje={ticket.mensaje}
+                  key={ticket.id}
+                  asunto={ticket.asunto}
+                  fecha={ticket.fecha}
+                  remitente={ticket.remitente}
+                  id={ticket.id}
+                  handleSend={handleSend}
+                  categoria={ticket.categoria}
+                  handleAttend={handleAttend}
+                />
+              ))
+          ) : !isLoading ? (
+            <p>No hay tickets disponibles.</p>
+          ) : null}
           {/* Boton para agregar */}
           <hr />
           {/* <Button variant="outlined">+</Button> */}
@@ -654,10 +724,9 @@ const ClassifyPage = () => {
             </div>
           ) : null}
 
-          {!isLoading && (selectedMonth !== "" || selectedCategory !== "")
-            ? (
-              dateFilteredInProgressList.length > 0 ? (
-                dateFilteredInProgressList
+          {!isLoading && (selectedMonth !== "" || selectedCategory !== "") ? (
+            dateFilteredInProgressList.length > 0 ? (
+              dateFilteredInProgressList
                 .sort((a, b) => new Date(b.fecha) - new Date(a.fecha))
                 .map((ticket) => (
                   <CardComplete
@@ -674,44 +743,40 @@ const ClassifyPage = () => {
                     fechaCompletado={ticket.fechaCompletado}
                   />
                 ))
-              ) : (
-                !isLoading ? <p>No hay tickets disponibles.</p> : null
-              )    
-            ) : (
-              visibleInProgressList.length > 0 ? (
-                visibleInProgressList
-                  .sort((a, b) => new Date(b.fecha) - new Date(a.fecha))
-                  .map((ticket) => (
-                    <CardComplete
-                      mensaje={ticket.mensaje}
-                      key={ticket.id}
-                      asunto={ticket.asunto}
-                      fecha={ticket.fecha}
-                      remitente={ticket.remitente}
-                      id={ticket.id}
-                      handleSend={handleSend}
-                      categoria={ticket.categoria}
-                      handleAttend={handleAttend}
-                      observacion={ticket.observacion}
-                      fechaCompletado={ticket.fechaCompletada}
-
-                    />
-                  ))
-              ) : (
-                !isLoading ? <p>No hay tickets disponibles.</p> : null
-              )
-            )
-          }
-
-
+            ) : !isLoading ? (
+              <p>No hay tickets disponibles.</p>
+            ) : null
+          ) : visibleInProgressList.length > 0 ? (
+            visibleInProgressList
+              .sort((a, b) => new Date(b.fecha) - new Date(a.fecha))
+              .map((ticket) => (
+                <CardComplete
+                  mensaje={ticket.mensaje}
+                  key={ticket.id}
+                  asunto={ticket.asunto}
+                  fecha={ticket.fecha}
+                  remitente={ticket.remitente}
+                  id={ticket.id}
+                  handleSend={handleSend}
+                  categoria={ticket.categoria}
+                  handleAttend={handleAttend}
+                  observacion={ticket.observacion}
+                  fechaCompletado={ticket.fechaCompletada}
+                />
+              ))
+          ) : !isLoading ? (
+            <p>No hay tickets disponibles.</p>
+          ) : null}
 
           <hr />
         </div>
       </div>
-      <div
+
+    {/* ===PAGINADOR===  */}
+    <div
         style={{
           display: "flex",
-          justifyContent: "center",
+          justifyContent: "center"
         }}
       >
         <div className={styles["pagination-container"]}>
@@ -730,23 +795,25 @@ const ClassifyPage = () => {
           <span
             style={{
               fontSize: ".9rem",
-              marginRight: '8px',
-              marginLeft: '8px'
+              marginRight: "8px",
+              marginLeft: "8px",
             }}
           >
             {/* {` Página ${currentPage} de ${allPage == -1 ? "-" : allPage} `} */}
-            {` Página ${currentPage} de ${selectedCategory !== '' || selectedMonth !== '' ? Math.ceil(totalPagesFilter / pageSize) : allPage == -1 ? "-" : allPage} `}
-
+            {` Página ${currentPage} de ${
+              selectedCategory !== "" || selectedMonth !== ""
+                ? Math.ceil(totalPagesFilter / pageSize)
+                : allPage == -1
+                ? "-"
+                : allPage
+            } `}
           </span>
           <Button
             onClick={goToNextPage}
             disabled={
-              (selectedCategory !== "" || selectedMonth !== "") ?
-                (
-                  currentPage >= Math.ceil(totalPagesFilter / pageSize) - 1
-                ) :
-                (currentPage >=
-                  allPage)
+              selectedCategory !== "" || selectedMonth !== ""
+                ? currentPage >= Math.ceil(totalPagesFilter / pageSize)
+                : currentPage >= allPage
             }
             variant="outlined"
             style={{
@@ -757,22 +824,15 @@ const ClassifyPage = () => {
           >
             Siguiente
           </Button>
-          {/* {console.log("PAGE", totalPagesFilter)}
-          {console.log("VALORRE",currentPage >= Math.ceil(totalPagesFilter/pageSize))} */}
-          {console.log("selected", selectedCategory !== "" || selectedMonth !== "")}
-          {console.log("selected category", selectedCategory)}
-          {console.log("selected month", selectedMonth)}
-
-
 
           <select
             style={{
               width: "15%",
-              marginLeft: '8px',
+              marginLeft: "8px",
             }}
             value={
               pageSize ===
-                planningList.length + assignedList.length + inPorgressList.length
+              planningList.length + assignedList.length + inPorgressList.length
                 ? "all"
                 : pageSize
             }
@@ -782,8 +842,8 @@ const ClassifyPage = () => {
               if (selectedValue === "all") {
                 setPageSize(
                   planningList.length +
-                  assignedList.length +
-                  inPorgressList.length
+                    assignedList.length +
+                    inPorgressList.length
                 );
               } else {
                 setPageSize(Number(selectedValue));
@@ -798,6 +858,8 @@ const ClassifyPage = () => {
           </select>
         </div>
       </div>
+      {/* ===PAGINADOR===  */}
+
     </div>
   );
 };
