@@ -5,21 +5,26 @@ import "chart.js/auto";
 import styles from "./styles/HomePage.module.css";
 import { Bar } from "react-chartjs-2";
 import { Pie } from "react-chartjs-2";
-import axios from "axios";
+import axios from "../config/axios";
 import {
   Chart as ChartJs,
   BarElement,
   CategoryScale,
   LinearScale,
 } from "chart.js";
+import Loading from "../components/Loading";
+import { CircularProgress } from "@mui/material";
+import BoxComponent from "../components/BoxComponent";
 ChartJs.register(CategoryScale, LinearScale, BarElement);
 
 const HomePage = () => {
   const [completado, setCompletado] = useState(0);
   const [enEspera, setEnEspera] = useState(0);
-  // const [asignado, setAsignado] = useState();
   const [solicitado, setSolicitado] = useState(0);
   const [chartType, setChartType] = useState("bar");
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadingBox, setLoadingBox] = useState(false);
+
   useEffect(() => {
     const intervalId = setInterval(() => {
       setChartType(chartType === "bar" ? "doughnut" : "bar");
@@ -32,6 +37,8 @@ const HomePage = () => {
   // const {stadisticsNumber} = useContext(StadisticsContext);
   useEffect(() => {
     document.title = "Inicio";
+    setLoadingBox(true)
+    setIsLoading(true); // Set isLoading to true before making requests
     axios
       .get(`${process.env.REACT_APP_API_URLS}/tickets/ticketsComplete/${yearSelected}`)
       .then((response) => {
@@ -39,7 +46,6 @@ const HomePage = () => {
         setCompletado(data[0].cantidad);
       })
       .catch((error) => {
-        setCompletado({ completado: 0 });
       });
 
     axios
@@ -49,7 +55,6 @@ const HomePage = () => {
         setSolicitado(data[0].cantidad);
       })
       .catch((error) => {
-        setSolicitado({ solicitado: 0 });
       });
 
     axios
@@ -59,8 +64,12 @@ const HomePage = () => {
         setEnEspera(data[0].cantidad);
       })
       .catch((error) => {
-        setEnEspera({ enEspera: 0 });
-      });
+        // console.log(error)
+      })
+      .finally(()=>{
+        setIsLoading(false);
+        setLoadingBox(false);
+      })
   }, []);
 
   // const number = stadisticsNumber.completado;
@@ -93,7 +102,7 @@ const HomePage = () => {
           "rgba(54, 162, 235, 1)",
           "rgba(255, 159, 64, 1)",
         ],
-        borderWidth: 1,
+        borderWidth: 1.5,
       },
     ],
   };
@@ -107,9 +116,21 @@ const HomePage = () => {
     },
   };
 
-  console.log("se render");
   return (
     <>
+{
+  loadingBox ? (
+    <div
+    >
+      <div className={`${styles.overlay} ${styles.fadeIn}`}>
+        {/* <div className={styles.overlayContent}> */}
+          <BoxComponent />
+        {/* </div> */}
+      </div>
+    </div>
+  ) : null
+}
+    
     <div className={styles.fila}>
     <div className={styles.cardContainer}>
         <Card
@@ -117,22 +138,26 @@ const HomePage = () => {
           abiertos={solicitado}
           proceso={enEspera}
           totales={totales}
+          isLoading={isLoading}
         />
-      </div>
+    </div>
       <div className={styles.barContainer}>
-        {chartType === "bar" ? (
-          <Bar
-            className="animate__animated animate__zoomIn"
-            data={data}
-            options={options}
-          ></Bar>
-        ) : (
-          <Pie
-            className="animate__animated animate__zoomIn"
-            data={data}
-            options={options}
-          ></Pie>
-        )}
+        {
+          isLoading? (<Loading/>) : 
+          (chartType === "bar" ? (
+            <Bar
+              className="animate__animated animate__zoomIn"
+              data={data}
+              options={options}
+            ></Bar>
+          ) : (
+            <Pie
+              className="animate__animated animate__zoomIn"
+              data={data}
+              options={options}
+            ></Pie>
+          ))
+        }
       </div>
     </div>
     </>

@@ -16,7 +16,6 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import axios from "axios";
 import { useState } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
 
@@ -227,9 +226,8 @@ export default function TemporaryDrawer({
       {["right"].map((anchor) => (
         <React.Fragment key={anchor}>
           <Button onClick={toggleDrawer(anchor, true)}>Administrar</Button>
-          <Divider orientation="vertical" flexItem />
           <IconButton aria-label="delete" onClick={handleClickOpenDialog} color="info">
-            <DeleteIcon />
+            <DeleteIcon fontSize="small"/>
           </IconButton>
 
           <Drawer

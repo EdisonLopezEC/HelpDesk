@@ -50,9 +50,9 @@ const YearSelector = () => {
           outline: "none",
           transition: "box-shadow 0.3s ease",
           cursor: "pointer",
-          "@media (max-width: 600px)": {
-            width: "80%",
-          },
+          // "@media (max-width: 600px)": {
+          //   width: "80%",
+          // },
         }}
       >
         {years.map((year) => (

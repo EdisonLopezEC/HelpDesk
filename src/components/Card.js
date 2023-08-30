@@ -4,9 +4,6 @@ import "animate.css";
 
 const Card = ( {cerrados, abiertos, proceso, totales} ) => {
 
-  console.log("VALORES CARD ", cerrados)
-
-
   return (
     <div
       style={{

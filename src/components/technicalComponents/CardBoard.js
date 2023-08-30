@@ -27,7 +27,9 @@ const CardBoard = ({asunto,fecha,remitente,mensaje, id, handleSend, categoria, h
       <CardActionArea onClick={handleCardClick}>
       <Box sx={{ height: 3, backgroundColor: 'gray' }} /> {/* Reemplazar CardMedia con un Box */}
         <CardContent
-        sx={{ maxHeight: '120px', minHeight:'120px', overflow: 'hidden', textOverflow: 'ellipsis' }}
+        sx={{ maxHeight: '120px', minHeight:'120px', overflow: 'hidden', textOverflow: 'ellipsis', minWidth: "200px" }}
+
+        // sx={{ maxHeight: '120px', minHeight:'120px', overflow: 'hidden', textOverflow: 'ellipsis' }}
         >
           <Typography gutterBottom variant="h5" component="div">
             {asunto}

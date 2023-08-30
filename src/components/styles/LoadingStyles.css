@@ -1,0 +1,23 @@
+  .svg {
+    width: 50vw;
+    height: 50vh;
+  } 
+    
+   .ellipse {
+    background: #fff;
+  }
+    
+  @keyframes gooey {
+    to {
+      transform: translate3d(230px, 0, 0);
+    }
+  }
+  
+  .ellipse:nth-child(1) {
+    animation: gooey 1s cubic-bezier(0.59, 0.8, 0.29, 0.1) infinite both alternate-reverse;
+    animation-delay: 1s / 6;
+  } 
+  
+  /* Repeat the above block for the other ellipses with appropriate delays */
+   
+

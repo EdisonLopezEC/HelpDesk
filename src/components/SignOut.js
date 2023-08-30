@@ -5,6 +5,8 @@ import Badge from '@mui/material/Badge';
 import { NavLink } from 'react-router-dom';
 import { UserContext } from '../context/UserContext';
 import axios from "../config/axios"
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import Cookies from 'js-cookie';
 
 const SmallAvatar = styled(Avatar)(({ theme }) => ({
   width: 22,
@@ -20,29 +22,27 @@ const SignOut = ({ username, avatarUrl }) => {
   const [user, setUser] = useState({});
 
     // Obtener el token de localhost
-    const token = localStorage.getItem('token');
+    // const token = localStorage.getItem('token');
     //Realizar la peticion con el Authorization y axios
     
     React.useEffect(() => {
-      const token = localStorage.getItem("token");
+      const token = Cookies.get("token")
       if (token) {
         axios
           .get("/usuarios/userInfo", {
             headers: { Authorization: `Bearer ${token}` },
           })
           .then((response) => {
-            console.log("ENTRO ACA");
-            console.log(response);
             const { data } = response;
             if(data.estadoCuenta !== "ACTIVO"){
-              localStorage.removeItem("token");
+              Cookies.remove("token")
               setUser({ login: false });
               return;
             }
             setUser({ login: true, rol: data.userId, nombres: data.nombreUsuario, estadoCuenta: data.estadoCuenta });
           })
           .catch((error) => {
-            localStorage.removeItem("token");
+            Cookies.remove("token")
             setUser({ login: false });
           });
       } else {
@@ -54,7 +54,7 @@ const SignOut = ({ username, avatarUrl }) => {
     const isMenuOpen = Boolean(anchorEl);
 
     const handleSingOut = () => {
-      localStorage.removeItem('token');
+      Cookies.remove("token")
       window.location.href = `${process.env.PUBLIC_URL}/`;
     }
 
@@ -79,13 +79,16 @@ const SignOut = ({ username, avatarUrl }) => {
         overlap="circular"
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
         badgeContent={
-          <SmallAvatar alt="" src="/static/images/avatar/1.jpg" 
+          <SmallAvatar 
+          alt=""
           onClick={handleMenuOpen}
           style={{
             width: "15px",
             height: "15px",
             cursor: "pointer"
           }}
+
+          
 
           />
         }

@@ -21,15 +21,22 @@ export default function TemporaryDrawerComplete({
   handleAttend,
   handleClose,
   observacion,
-  fechaCompletado 
+  fechaCompletado,
+  isTransitionModal 
 }) {
   const [isMobile, setIsMobile] = React.useState(window.innerWidth <= 768);
 
   fecha = new Date(fecha);
 
+  fechaCompletado = new Date(fechaCompletado)
+
   const fechaEc = fecha.toLocaleDateString('es-EC', {day: '2-digit', month: '2-digit', year: '2-digit'})
                  + ' '
                  + fecha.toLocaleTimeString('es-EC', {hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit'});
+
+ const fechaCompletadoEc  = fechaCompletado.toLocaleDateString('es-EC', {day: '2-digit', month: '2-digit', year: '2-digit'})
+ + ' '
+ + fechaCompletado.toLocaleTimeString('es-EC', {hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit'});
 
 
   const regex = /<html\b[^>]*>([\s\S]*?)<\/html>/i;
@@ -134,12 +141,11 @@ export default function TemporaryDrawerComplete({
         {fechaEc}
       </Typography>
       <hr />
-        {console.log('FECHA COMPLETADAAA', fechaCompletado)}
       <Typography variant="h7" component="h5">
         Fecha y Hora Completado
       </Typography>    
       <Typography id="transition-modal-description" sx={{ mt: 2 }}>
-        {fechaCompletado}
+        {fechaCompletadoEc}
       </Typography>
       <hr />
 
@@ -165,7 +171,7 @@ export default function TemporaryDrawerComplete({
   );
 
   return (
-    <div>
+    !isTransitionModal && <div>
       {["right"].map((anchor) => (
         <React.Fragment key={anchor}>
           <Button

@@ -164,7 +164,7 @@ export default function TemporaryDrawerProgress({
         <Button
           variant="contained"
           onClick={() => {
-            handleAttend(id, remitente, observaciones);
+            handleAttend(id, remitente, observaciones, asunto);
             setState({ right: false });
           }}
         >

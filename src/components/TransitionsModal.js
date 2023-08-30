@@ -100,14 +100,12 @@ export default function TransitionsModal({
             </Box>
             <br />
 
-            {console.log(list," AQUI LSITAAAA")}
-            {console.log(list.length," AQUI LSITAAAA LENGTH")}
 
 
             {list.length >= 1 ? (
               list
               .map((ticket) => (
-                <>
+                // <div>
                   <CardComplete
                     handleClose={handleCloseModify}
                     handleOpenDrawer={handleOpenDrawer}
@@ -117,10 +115,11 @@ export default function TransitionsModal({
                     asunto={ticket.asunto}
                     fecha={ticket.fecha}
                     mensaje={ticket.mensaje}
-                    key={ticket.id}
+                    key={ticket.asunto+ticket.id}
+                    isTransitionModal={true}
                   />
-                  <br />
-                </>
+                  // <br />
+                // </div>
               ))
             ) : (
               <div></div>

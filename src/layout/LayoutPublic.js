@@ -61,7 +61,7 @@ const LayoutPublic = () => {
 
   return (
     <>
-      <ListContext.Provider>
+      {/* <ListContext.Provider> */}
         <div className="navbar">
           {/* <img
           className="nav_logo"
@@ -226,7 +226,7 @@ const LayoutPublic = () => {
         <main>
           <Outlet />
         </main>
-      </ListContext.Provider>
+      {/* </ListContext.Provider> */}
     </>
   );
 };

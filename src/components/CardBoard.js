@@ -21,13 +21,16 @@ const CardBoard = ({asunto,fecha,remitente,mensaje, id, handleSend, handleDelete
 
   const shortenedText = mensaje.length > MAX_TEXT_LENGTH ? `${mensaje.substring(0, MAX_TEXT_LENGTH)}...` : mensaje;
 
+
+
   return (
     <>
     <Card sx={{ maxWidth: 345}}>
       <CardActionArea onClick={handleCardClick}>
       <Box sx={{ height: 3, backgroundColor: 'gray' }} /> {/* Reemplazar CardMedia con un Box */}
         <CardContent
-        sx={{ maxHeight: '120px', minHeight:'120px', overflow: 'hidden', textOverflow: 'ellipsis' }}
+        sx={{ maxHeight: '120px', minHeight:'120px', overflow: 'hidden', textOverflow: 'ellipsis', minWidth: "200px" }}
+        // sx={{ maxHeight: '120px', minHeight:'120px', overflow: 'hidden', textOverflow: 'ellipsis' }}
         >
           <Typography gutterBottom variant="h5" component="div">
             {asunto}

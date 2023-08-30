@@ -20,13 +20,14 @@ import {
 } from "@mui/material";
 import TemporaryDrawer from "../components/TemporaryDrawer";
 import CardComplete from "../components/CardComplete";
-import axios from "axios";
+import axios from "../config/axios";
 import TransitionsModal from "../components/TransitionsModal";
 import { UserContext } from "../context/UserContext";
 import "animate.css";
 import { StadisticsContext } from "../context/StadisticsContext";
-import FilterAltIcon from '@mui/icons-material/FilterAlt';
-import FilterAltOffIcon from '@mui/icons-material/FilterAltOff';
+import FilterAltIcon from "@mui/icons-material/FilterAlt";
+import FilterAltOffIcon from "@mui/icons-material/FilterAltOff";
+import BoxComponent from "../components/BoxComponent";
 
 const ClassifyPage = () => {
   //Listas del board
@@ -37,32 +38,7 @@ const ClassifyPage = () => {
   const [pageSize, setPageSize] = useState(5); // Puedes ajustar el tamaño de página según tus necesidades
   const perPageOptions = [5, 10, "all"];
   const [filter, setFilter] = useState("all");
-
-  const token = localStorage.getItem("token");
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
-
-  //Eliminar ticket
-  const handleDelete = (ticketId) => {
-
-    axios
-      .put(`${process.env.REACT_APP_API_URLS}/tickets/${ticketId}`, {
-        categoria: null,
-        estado: "cancelado",
-      })
-      .then((response) => {
-        console.log(response);
-        setPlanningList(
-          planningList.filter((ticket) => ticket.id !== ticketId)
-        );
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
+  const [loadingBox, setLoadingBox] = useState(false);
 
   const { stadisticsNumber, setStadisticsNumber } =
     useContext(StadisticsContext);
@@ -82,25 +58,20 @@ const ClassifyPage = () => {
     localStorage.getItem("selectedYear")
   );
 
-
-
-
-
   useEffect(() => {
-    
-    console.log("SIIIIIII TOKEEEEEN "+ token)
+    setLoadingBox(true);
     setIsLoading(true);
     axios
-      .get(`${process.env.REACT_APP_API_URLS}/tickets`,config)
+      .get(`${process.env.REACT_APP_API_URLS}/tickets`)
       .then((res) => {
-        console.log(res.data);
+        // console.log(res.data);
         const newPlanningList = [];
         const newassignedList = [];
         const newinProgressList = [];
 
         res.data.forEach((element) => {
           const fecha = new Date(element.fecha);
-          console.log("Aqui fechas de los element", element.fechaCompletada);
+          // console.log("Aqui fechas de los element", element.fechaCompletada);
           const fechaEc = fecha.toLocaleDateString("es-EC", {
             day: "2-digit",
             month: "2-digit",
@@ -138,54 +109,61 @@ const ClassifyPage = () => {
         setassignedList((prevList) => [...newassignedList, ...prevList]);
         setInPorgressList((prevList) => [...newinProgressList, ...prevList]);
         setIsLoading(false);
+        setLoadingBox(false);
         setStadisticsNumber({ completado: newinProgressList.length });
       })
       .catch((error) => {
-        console.log(error);
+        // console.log(error);
       });
   }, []);
 
   const [open, setOpen] = useState(false);
 
   // Actualizar ticket
-  const handleSend = (ticketId, remitente) => {
+  const handleSend = (ticketId, remitente, asunto) => {
+    setLoadingBox(true);
     axios
       .put(`${process.env.REACT_APP_API_URLS}/tickets/${ticketId}`, {
         estado: "en espera",
+        fechaPlaneadoProgesoTecnico: new Date(),
       })
       .then((response) => {
         // ENVIAR EL MENSAJE DEL TECNICO
         axios
           .post(
-            `${process.env.REACT_APP_API_URLS}/tickets/techicalProgress`,
+            `${process.env.REACT_APP_API_URLS}/tickets/technicalProgress`,
             null,
             {
-              params: { remitente: remitente },
+              params: { remitente: remitente, asunto: asunto },
             }
           )
           .then((response) => {
-            console.log("se envio tecnico");
+            // console.log("se envio tecnico");
+            setLoadingBox(false);
           })
           .catch((error) => {
-            console.log(error);
+            // console.log(error);
           });
 
         setPlanningList(
           planningList.filter((ticket) => ticket.id !== ticketId)
         );
         const ticket = planningList.find((ticket) => ticket.id === ticketId);
+        ticket.fechaPlaneadoProgesoTecnico = new Date() 
         setassignedList([ticket, ...assignedList]);
       })
       .catch((error) => {
-        console.log(error);
+        // console.log(error);
       });
   };
 
-  const handleAttend = (ticketId, remitente, observaciones) => {
+  const handleAttend = (ticketId, remitente, observaciones, asunto) => {
+    setLoadingBox(true);
     axios
       .put(`${process.env.REACT_APP_API_URLS}/tickets/${ticketId}`, {
         estado: "completado",
         observacion: observaciones,
+        fechaCompletada: new Date(),
       })
       .then((response) => {
         axios
@@ -193,14 +171,19 @@ const ClassifyPage = () => {
             `${process.env.REACT_APP_API_URLS}/tickets/technicalComplete`,
             null,
             {
-              params: { remitente: remitente },
+              params: {
+                remitente: remitente,
+                observaciones: observaciones,
+                asunto: asunto,
+              },
             }
           )
           .then((response) => {
-            console.log("se envio tecnico");
+            // console.log("se envio tecnico");
+            setLoadingBox(false);
           })
           .catch((error) => {
-            console.log(error);
+            // console.log(error);
           });
 
         setassignedList(
@@ -208,10 +191,11 @@ const ClassifyPage = () => {
         );
         const ticket = assignedList.find((ticket) => ticket.id === ticketId);
         ticket.observacion = observaciones;
+        ticket.fechaCompletada = new Date();
         setInPorgressList([ticket, ...inPorgressList]);
       })
       .catch((error) => {
-        console.log(error);
+        // console.log(error);
       });
   };
 
@@ -330,27 +314,29 @@ const ClassifyPage = () => {
     }
   });
 
-  const visiblePlanningList = filteredPlanningList.slice(
-    indexOfFirstCard,
-    indexOfLastCard
-  );
+  const visiblePlanningList = filteredPlanningList
+    .sort(
+      (a, b) =>
+        new Date(b.fechaAtenderPlaneado) - new Date(a.fechaAtenderPlaneado)
+    )
+    .slice(indexOfFirstCard, indexOfLastCard);
 
-  const visibleAssignedList = filteredAssignedList.slice(
-    indexOfFirstCard,
-    indexOfLastCard
-  );
+  const visibleAssignedList = filteredAssignedList
+    .sort(
+      (a, b) =>
+        new Date(b.fechaPlaneadoProgesoTecnico) -
+        new Date(a.fechaPlaneadoProgesoTecnico)
+    )
+    .slice(indexOfFirstCard, indexOfLastCard);
 
-  const visibleInProgressList = filteredInProgressList.slice(
-    indexOfFirstCard,
-    indexOfLastCard
-  );
+  const visibleInProgressList = filteredInProgressList
+    .sort((a, b) => new Date(b.fechaCompletada) - new Date(a.fechaCompletada))
+    .slice(indexOfFirstCard, indexOfLastCard);
 
   const [dateFilteredPlanningList, setDateFilteredPlanningList] = useState();
   const [dateFilteredInProgressList, setDateFilteredInProgressList] =
     useState();
   const [dateFilteredAssignedList, setDateFilteredAssignedList] = useState();
-
-  console.log("AQUII DATEFILTER" + dateFilteredInProgressList);
 
   const maxLength = Math.max(
     planningList.length,
@@ -358,13 +344,13 @@ const ClassifyPage = () => {
     inPorgressList.length
   );
 
-  console.log(maxLength + "AQUI MAX LENGH");
+  // console.log(maxLength + "AQUI MAX LENGH");
 
   const allPage = Math.ceil(maxLength / pageSize);
 
-  console.log(allPage + "AQUI MAX CEIL");
+  // console.log(allPage + "AQUI MAX CEIL");
 
-  console.log("ALL PAGEEEE========", allPage);
+  // console.log("ALL PAGEEEE========", allPage);
 
   const assignedListLength = dateFilteredAssignedList
     ? dateFilteredAssignedList.length
@@ -382,12 +368,10 @@ const ClassifyPage = () => {
         pageSize
     ) - 1 || 0;
 
-  console.log("ESTE ES EL ALL" + allPageFilter);
-
   const [totalPagesFilter, setTotalPagesFilter] = useState(0);
 
   useEffect(() => {
-    console.log("se ejecuto el filtro");
+    // console.log("se ejecuto el filtro");
     const dateFilteredPlanningList = visiblePlanningList.filter((ticket) => {
       const ticketDate = new Date(ticket.fecha);
       const ticketMonth = ticketDate.getMonth(); // Obtener el mes del ticket (0-11)
@@ -448,17 +432,29 @@ const ClassifyPage = () => {
       return true; // Mantener el ticket si pasa los filtros de mes y categoría
     });
 
-    console.log("AQUI LISTA CON FILTROOO");
+    // console.log("AQUI LISTA CON FILTROOO");
 
     setDateFilteredPlanningList(
-      dateFilteredPlanningList.slice(indexOfFirstCard, indexOfLastCard)
+      dateFilteredPlanningList
+        .sort(
+          (a, b) => new Date(b.fechaCompletada) - new Date(a.fechaCompletada)
+        )
+        .slice(indexOfFirstCard, indexOfLastCard)
     );
     setDateFilteredAssignedList(
-      dateFilteredAssignedList.slice(indexOfFirstCard, indexOfLastCard)
+      dateFilteredAssignedList
+        .sort(
+          (a, b) => new Date(b.fechaCompletada) - new Date(a.fechaCompletada)
+        )
+        .slice(indexOfFirstCard, indexOfLastCard)
     );
 
     setDateFilteredInProgressList(
-      dateFilteredInProgressList.slice(indexOfFirstCard, indexOfLastCard)
+      dateFilteredInProgressList
+        .sort(
+          (a, b) => new Date(b.fechaCompletada) - new Date(a.fechaCompletada)
+        )
+        .slice(indexOfFirstCard, indexOfLastCard)
     );
 
     const totalFilteredTicket = Math.max(
@@ -467,7 +463,7 @@ const ClassifyPage = () => {
       dateFilteredPlanningList.length
     );
     setTotalPagesFilter(totalFilteredTicket);
-    console.log(totalFilteredTicket + " TOTAAAAAL FILTER MAXIMO");
+    // console.log(totalFilteredTicket + " TOTAAAAAL FILTER MAXIMO");
   }, [
     selectedMonth,
     selectedCategory,
@@ -480,6 +476,16 @@ const ClassifyPage = () => {
 
   return (
     <div className={styles.container}>
+      {loadingBox ? (
+        <div>
+          <div className={`${styles.overlay} ${styles.fadeIn}`}>
+            {/* <div className={styles.overlayContent}> */}
+            <BoxComponent />
+            {/* </div> */}
+          </div>
+        </div>
+      ) : null}
+
       <div
         className={styles.header}
         style={{
@@ -502,7 +508,13 @@ const ClassifyPage = () => {
               ? "contained"
               : "text"
           }
-          endIcon={selectedMonth!=="" || selectedCategory !== "" ? <FilterAltOffIcon/> : <FilterAltIcon/>}
+          endIcon={
+            selectedMonth !== "" || selectedCategory !== "" ? (
+              <FilterAltOffIcon />
+            ) : (
+              <FilterAltIcon />
+            )
+          }
         >
           Filtrar
         </Button>
@@ -592,19 +604,19 @@ const ClassifyPage = () => {
           {!isLoading && (selectedMonth !== "" || selectedCategory !== "") ? (
             dateFilteredPlanningList.length > 0 ? (
               dateFilteredPlanningList
-                .sort((a, b) => new Date(b.fecha) - new Date(a.fecha))
+                // .sort((a, b) => new Date(b.fecha) - new Date(a.fecha))
                 .map((ticket) => (
                   <CardBoard
                     mensaje={ticket.mensaje}
                     key={ticket.id}
                     asunto={ticket.asunto}
+                    x
                     fecha={ticket.fecha}
                     remitente={ticket.remitente}
                     id={ticket.id}
                     handleSend={handleSend}
                     categoria={ticket.categoria}
                     handleAttend={handleAttend}
-                    handleDelete={handleDelete}
                   />
                 ))
             ) : !isLoading ? (
@@ -612,7 +624,7 @@ const ClassifyPage = () => {
             ) : null
           ) : visiblePlanningList.length > 0 ? (
             visiblePlanningList
-              .sort((a, b) => new Date(b.fecha) - new Date(a.fecha))
+              // .sort((a, b) => new Date(b.fecha) - new Date(a.fecha))
               .map((ticket) => (
                 <CardBoard
                   mensaje={ticket.mensaje}
@@ -661,7 +673,7 @@ const ClassifyPage = () => {
           {!isLoading && (selectedMonth !== "" || selectedCategory !== "") ? (
             dateFilteredAssignedList.length > 0 ? (
               dateFilteredAssignedList
-                .sort((a, b) => new Date(b.fecha) - new Date(a.fecha))
+                // .sort((a, b) => new Date(b.fecha) - new Date(a.fecha))
                 .map((ticket) => (
                   <CardProgress
                     mensaje={ticket.mensaje}
@@ -680,7 +692,7 @@ const ClassifyPage = () => {
             ) : null
           ) : visibleAssignedList.length > 0 ? (
             visibleAssignedList
-              .sort((a, b) => new Date(b.fecha) - new Date(a.fecha))
+              // .sort((a, b) => new Date(b.fecha) - new Date(a.fecha))
               .map((ticket) => (
                 <CardProgress
                   mensaje={ticket.mensaje}
@@ -727,7 +739,7 @@ const ClassifyPage = () => {
           {!isLoading && (selectedMonth !== "" || selectedCategory !== "") ? (
             dateFilteredInProgressList.length > 0 ? (
               dateFilteredInProgressList
-                .sort((a, b) => new Date(b.fecha) - new Date(a.fecha))
+                // .sort((a, b) => new Date(b.fechaCompletada) - new Date(a.fechaCompletada))
                 .map((ticket) => (
                   <CardComplete
                     mensaje={ticket.mensaje}
@@ -740,7 +752,7 @@ const ClassifyPage = () => {
                     categoria={ticket.categoria}
                     handleAttend={handleAttend}
                     observacion={ticket.observacion}
-                    fechaCompletado={ticket.fechaCompletado}
+                    fechaCompletado={ticket.fechaCompletada}
                   />
                 ))
             ) : !isLoading ? (
@@ -748,7 +760,7 @@ const ClassifyPage = () => {
             ) : null
           ) : visibleInProgressList.length > 0 ? (
             visibleInProgressList
-              .sort((a, b) => new Date(b.fecha) - new Date(a.fecha))
+              // .sort((a, b) => new Date(b.fechaCompletada) - new Date(a.fechaCompletada))
               .map((ticket) => (
                 <CardComplete
                   mensaje={ticket.mensaje}
@@ -767,16 +779,15 @@ const ClassifyPage = () => {
           ) : !isLoading ? (
             <p>No hay tickets disponibles.</p>
           ) : null}
-
           <hr />
         </div>
       </div>
 
-    {/* ===PAGINADOR===  */}
-    <div
+      {/* ===PAGINADOR===  */}
+      <div
         style={{
           display: "flex",
-          justifyContent: "center"
+          justifyContent: "center",
         }}
       >
         <div className={styles["pagination-container"]}>
@@ -859,7 +870,6 @@ const ClassifyPage = () => {
         </div>
       </div>
       {/* ===PAGINADOR===  */}
-
     </div>
   );
 };

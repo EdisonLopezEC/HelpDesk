@@ -139,7 +139,7 @@ const contenidoHtml = match ? match[0] : '';
         <Button
           variant="contained"
           onClick={() => {
-            handleSend(id, remitente);
+            handleSend(id, remitente, asunto);
             setState({ right: false });
           }}
         >

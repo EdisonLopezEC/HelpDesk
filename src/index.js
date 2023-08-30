@@ -12,11 +12,12 @@ import { StadisticsContext } from "./context/StadisticsContext";
 
 import axios from "./config/axios";
 import ClassifyPage from "./pages/ClassifyPage";
+import Cookies from "js-cookie";
 
 function App() {
   const [stadisticsNumber, setStadisticsNumber] = useState([]);
   const [user, setUser] = useState(() => {
-    const token = localStorage.getItem("token");
+    const token = Cookies.get("token")
     return { login: !!token };
   });
 
@@ -26,26 +27,26 @@ function App() {
   const [solicitado, setSolicitado] = useState();
 
   React.useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = Cookies.get("token")
     if (token) {
       axios
         .get("/usuarios/userInfo", {
           headers: { Authorization: `Bearer ${token}` },
         })
         .then((response) => {
-          console.log("ENTRO ACA");
-          console.log(response);
+          // console.log("ENTRO ACA");
+          // console.log(response);
           const { data } = response;
           if(data.estadoCuenta !== "ACTIVO"){
-            localStorage.removeItem("token");
+            Cookies.remove("token")
             setUser({ login: false });
             return;
           }
-          console.log("este el rol", data.userId);
+          // console.log("este el rol", data.userId);
           setUser({ login: true, rol: data.userId });
         })
         .catch((error) => {
-          localStorage.removeItem("token");
+          Cookies.remove("token")
           setUser({ login: false });
         });
     } else {
@@ -53,7 +54,7 @@ function App() {
     }
   }, []);
 
-  if (user.login && user.rol === "ROLE_HELPDESK") {
+  if (user.login && user.rol === process.env.REACT_APP_SECURITY_ONE) {
     return (
       <StadisticsContext.Provider
         value={{ stadisticsNumber, setStadisticsNumber }}
@@ -65,8 +66,8 @@ function App() {
         </UserContext.Provider>
       </StadisticsContext.Provider>
     );
-  } else if (user.login && user.rol === "ROLE_HELPDESK_TECNICO") {
-    console.log('es tecnicoooo')
+  } else if (user.login && user.rol === process.env.REACT_APP_SECURITY_TWO) {
+    // console.log('es tecnicoooo')
     return (
       <StadisticsContext.Provider
         value={{ stadisticsNumber, setStadisticsNumber }}
@@ -79,7 +80,7 @@ function App() {
       </StadisticsContext.Provider>
     );
 
-  } else if (user.login && user.rol === "ROLE_HELPDESK_CATEGORIZADOR") {
+  } else if (user.login && user.rol === process.env.REACT_APP_SECURITY_THREE) {
     return (
       <StadisticsContext.Provider
         value={{ stadisticsNumber, setStadisticsNumber }}
@@ -92,25 +93,14 @@ function App() {
       </StadisticsContext.Provider>
     );
   }
-  // } else {
-  //   return (
-  //     <StadisticsContext.Provider
-  //       value={{ stadisticsNumber, setStadisticsNumber }}
-  //     >
-  //       <UserContext.Provider value={{ user, setUser }}>
-  //         {console.log("No entro a ninguno")}
-  //         <SignInSide />
-  //       </UserContext.Provider>
-  //     </StadisticsContext.Provider>
-  //   );
-  // }
+
   if(!user.login){
         return (
       <StadisticsContext.Provider
         value={{ stadisticsNumber, setStadisticsNumber }}
       >
         <UserContext.Provider value={{ user, setUser }}>
-          {console.log("No entro a ninguno")}
+          {/* {console.log("No entro a ninguno")} */}
           <SignInSide />
         </UserContext.Provider>
       </StadisticsContext.Provider>
@@ -120,3 +110,5 @@ function App() {
 }
 
 createRoot(document.getElementById("root")).render(<App />);
+
+
